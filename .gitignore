@@ -1,0 +1,16 @@
+# build output
+dist/
+.astro/
+node_modules/
+
+# private working data: source previews, OCR, review tables — never commit
+.private/
+
+# env & OS
+.env
+.env.*
+!.env.example
+.DS_Store
+Thumbs.db
+desktop.ini
+*.log

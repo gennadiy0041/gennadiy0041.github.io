@@ -1,0 +1,22 @@
+# Profile shown on the site (RU/EN). FIXTURE values are replaced with real ones.
+main:
+  name: { ru: "Геннадий Козлов", en: "Gennadiy Kozlov" }
+  typed:
+    ru: ["строю AI-продукты", "довожу стартапы до финала", "выступаю на конференциях"]
+    en: ["build AI products", "take startups to the final", "speak at conferences"]
+  intro: { ru: "FIXTURE intro", en: "FIXTURE intro" }
+  about:
+    ru: ["FIXTURE абзац 1", "FIXTURE абзац 2"]
+    en: ["FIXTURE paragraph 1", "FIXTURE paragraph 2"]
+  location: { ru: "Кокшетау, Казахстан", en: "Kokshetau, Kazakhstan" }
+  heroPhotos:
+    - { src: "./media/fixture-portrait.webp", alt: { ru: "Фото", en: "Photo" } }
+  education:
+    - { title: { ru: "FIXTURE", en: "FIXTURE" }, place: { ru: "Кокшетауский университет им. Абая Мырзахметова", en: "Abai Myrzakhmetov Kokshetau University" }, period: "2023 — н.в." }
+  experience: []
+  skills:
+    - { group: { ru: "AI", en: "AI" }, items: ["LLM API", "Python"] }
+  languages:
+    - { name: { ru: "Английский", en: "English" }, level: { ru: "C1", en: "C1" } }
+  contacts:
+    - { kind: github, label: "github.com/gennadiy0041", url: "https://github.com/gennadiy0041" }

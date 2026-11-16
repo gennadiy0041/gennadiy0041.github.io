@@ -1,0 +1,15 @@
+---
+import Base from '../layouts/Base.astro';
+import { getAchievements, getProjects } from '../lib/data';
+import { getLang, loc } from '../i18n';
+const lang = getLang(Astro.currentLocale);
+const ach = await getAchievements();
+const prj = await getProjects();
+---
+<Base>
+  <section id="top" class="container-x pt-40">
+    <h1 class="section-title">Әә Ғғ Ққ Ңң Өө Ұұ Үү Іі Һһ — Геннадий Козлов</h1>
+    <ul>{ach.map((a) => <li>{a.data.date} — {loc(a.data.title, lang)}</li>)}</ul>
+    <ul>{prj.map((p) => <li>{p.data.name}</li>)}</ul>
+  </section>
+</Base>

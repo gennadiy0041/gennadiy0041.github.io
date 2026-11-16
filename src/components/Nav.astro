@@ -1,0 +1,213 @@
+---
+import { localizePath, switchLangPath, useT, type Lang } from '../i18n';
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const t = useT(lang);
+const home = localizePath('/', lang);
+const other: Lang = lang === 'ru' ? 'en' : 'ru';
+const otherHref = switchLangPath(Astro.url.pathname, other);
+const cv = `/cv/gennadiy-kozlov-${lang}.pdf`;
+const links = [
+  { id: 'projects', label: t('nav.projects') },
+  { id: 'achievements', label: t('nav.achievements') },
+  { id: 'documents', label: t('nav.certificates') },
+  { id: 'skills', label: t('nav.skills') },
+  { id: 'about', label: t('nav.about') },
+  { id: 'contacts', label: t('nav.contacts') },
+];
+---
+
+<header class="site-nav" data-nav transition:persist="site-nav" transition:persist-props>
+  <div class="container-x flex h-[var(--nav-h)] items-center gap-4">
+    <a href={home} class="group flex items-center gap-3" aria-label={lang === 'ru' ? 'Геннадий Козлов — на главную' : 'Gennadiy Kozlov — home'}>
+      <span class="logo-mark" aria-hidden="true">
+        <svg viewBox="0 0 32 32" width="32" height="32"><rect x="1" y="1" width="30" height="30" rx="9" fill="none" stroke="currentColor" stroke-opacity=".22"></rect><path d="M19.5 10.5a6.4 6.4 0 1 0 1.6 7.2h-5" fill="none" stroke="var(--accent)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"></path><path d="M22.5 9.5v13" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"></path><path d="m22.6 16 4-6.2M22.6 16l4 6.5" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"></path></svg>
+      </span>
+      <span class="hidden font-mono text-[0.78rem] tracking-[0.08em] text-[var(--text-dim)] uppercase transition-colors group-hover:text-[var(--text)] sm:inline">
+        {lang === 'ru' ? 'Геннадий Козлов' : 'Gennadiy Kozlov'}
+      </span>
+    </a>
+
+    <nav class="ml-auto hidden lg:block" aria-label={lang === 'ru' ? 'Разделы' : 'Sections'}>
+      <ul class="flex items-center gap-1">
+        {
+          links.map((l) => (
+            <li>
+              <a href={`${home}#${l.id}`} data-nav-link={l.id} class="nav-link">
+                {l.label}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
+
+    <div class="ml-auto flex items-center gap-2 lg:ml-4">
+      <button type="button" class="nav-icon-btn" data-palette-open aria-label={t('nav.search')} aria-keyshortcuts="Control+K Meta+K">
+        <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><circle cx="11" cy="11" r="6.5" fill="none" stroke="currentColor" stroke-width="1.8"></circle><path d="m16 16 4.5 4.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"></path></svg>
+        <span class="hidden items-center gap-1 xl:inline-flex"><span class="kbd" data-mod-key>Ctrl</span><span class="kbd">K</span></span>
+      </button>
+      <a href={otherHref} class="nav-lang" hreflang={other} lang={other} aria-label={t('lang.switch')} data-astro-reload={false}>
+        <span class:list={[lang === 'ru' && 'is-on']}>RU</span><span class="opacity-30">/</span><span class:list={[lang === 'en' && 'is-on']}>EN</span>
+      </a>
+      <a href={cv} class="btn btn-primary hidden !h-10 !px-4 !text-[0.85rem] sm:inline-flex" download data-cv-link>
+        <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path d="M12 4v11m0 0 4.5-4.5M12 15l-4.5-4.5M5 19.5h14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+        {t('nav.resume')}
+      </a>
+      <button type="button" class="nav-icon-btn lg:hidden" data-menu-open aria-label={t('nav.menu')} aria-expanded="false" aria-controls="mobile-menu">
+        <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M4 8h16M4 16h10" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"></path></svg>
+      </button>
+    </div>
+  </div>
+
+  <div id="mobile-menu" class="mobile-menu" hidden data-menu>
+    <div class="container-x flex h-[var(--nav-h)] items-center justify-end">
+      <button type="button" class="nav-icon-btn" data-menu-close aria-label={t('nav.close')}>
+        <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"></path></svg>
+      </button>
+    </div>
+    <nav class="container-x" aria-label={lang === 'ru' ? 'Разделы' : 'Sections'}>
+      <ol class="mt-4 space-y-1">
+        {
+          links.map((l, i) => (
+            <li>
+              <a href={`${home}#${l.id}`} class="mobile-link" data-menu-link>
+                <span class="font-mono text-xs text-[var(--text-mute)]">{String(i + 1).padStart(2, '0')}</span>
+                {l.label}
+              </a>
+            </li>
+          ))
+        }
+      </ol>
+      <a href={cv} class="btn btn-primary mt-10 w-full" download>
+        {t('hero.cta.resume')}
+      </a>
+    </nav>
+  </div>
+</header>
+
+<style>
+  .site-nav {
+    position: fixed;
+    inset: 0 0 auto 0;
+    z-index: 50;
+    transition:
+      transform 0.5s var(--ease-out-expo),
+      background-color 0.4s,
+      border-color 0.4s;
+    border-bottom: 1px solid transparent;
+  }
+  :global(html[data-scrolled]) .site-nav {
+    background: color-mix(in oklab, var(--color-ink-900) 72%, transparent);
+    backdrop-filter: blur(14px) saturate(140%);
+    -webkit-backdrop-filter: blur(14px) saturate(140%);
+    border-bottom-color: var(--line);
+  }
+  :global(html[data-nav-hidden]) .site-nav {
+    transform: translateY(-100%);
+  }
+  .logo-mark {
+    display: grid;
+    place-items: center;
+    color: var(--text);
+    transition: transform 0.5s var(--ease-out-expo);
+  }
+  a:hover .logo-mark {
+    transform: rotate(-8deg) scale(1.06);
+  }
+  .nav-link {
+    position: relative;
+    display: inline-flex;
+    height: 2.25rem;
+    align-items: center;
+    padding-inline: 0.8rem;
+    border-radius: 999px;
+    font-size: 0.88rem;
+    color: var(--text-dim);
+    transition:
+      color 0.25s,
+      background-color 0.25s;
+  }
+  .nav-link:hover,
+  .nav-link[aria-current='true'] {
+    color: var(--text);
+    background: rgb(255 255 255 / 0.05);
+  }
+  .nav-link[aria-current='true']::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    bottom: 3px;
+    width: 4px;
+    height: 4px;
+    margin-left: -2px;
+    border-radius: 99px;
+    background: var(--accent);
+    box-shadow: 0 0 10px var(--accent);
+  }
+  .nav-icon-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    height: 2.5rem;
+    min-width: 2.5rem;
+    justify-content: center;
+    padding-inline: 0.6rem;
+    border-radius: 999px;
+    border: 1px solid var(--line);
+    color: var(--text-dim);
+    background: rgb(255 255 255 / 0.02);
+    transition:
+      color 0.25s,
+      border-color 0.25s,
+      background-color 0.25s;
+  }
+  .nav-icon-btn:hover {
+    color: var(--text);
+    border-color: var(--line-2);
+    background: rgb(255 255 255 / 0.05);
+  }
+  .nav-lang {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    height: 2.5rem;
+    padding-inline: 0.85rem;
+    border-radius: 999px;
+    border: 1px solid var(--line);
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    color: var(--text-mute);
+    transition: border-color 0.25s;
+  }
+  .nav-lang:hover {
+    border-color: var(--line-2);
+  }
+  .nav-lang .is-on {
+    color: var(--text);
+  }
+  .mobile-menu {
+    position: fixed;
+    inset: 0;
+    z-index: 70;
+    background: color-mix(in oklab, var(--color-ink-950) 94%, transparent);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+    overflow-y: auto;
+    padding-bottom: 3rem;
+  }
+  .mobile-link {
+    display: flex;
+    align-items: baseline;
+    gap: 1rem;
+    padding-block: 0.7rem;
+    font-family: var(--font-display);
+    font-size: clamp(1.8rem, 8vw, 2.6rem);
+    font-weight: 600;
+    letter-spacing: -0.03em;
+    border-bottom: 1px solid var(--line);
+  }
+</style>
