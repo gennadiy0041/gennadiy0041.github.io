@@ -1,0 +1,374 @@
+---
+import { Image } from 'astro:assets';
+import SectionHead from '../SectionHead.astro';
+import { getProjects, projectHref } from '../../lib/data';
+import { fmtDate, loc, useT, type Lang } from '../../i18n';
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const t = useT(lang);
+const projects = await getProjects();
+// The bento holds the strongest work (size / order come from content); the rest goes to a compact list.
+const BENTO = 11;
+const main = projects.slice(0, BENTO);
+const more = projects.slice(BENTO);
+const sizesFor = (size: string) =>
+  size === 'xl' ? '(min-width: 1100px) 600px, (min-width: 768px) 50vw, 100vw' : size === 'lg' ? '(min-width: 1100px) 320px, (min-width: 768px) 50vw, 100vw' : '(min-width: 1100px) 300px, (min-width: 768px) 50vw, 100vw';
+---
+
+<section id="projects" class="relative py-24 md:py-32" data-section data-section-label={t('nav.projects')} aria-labelledby="projects-title">
+  <div class="container-x">
+    <SectionHead index="02" eyebrow={t('projects.eyebrow')} title={t('projects.title')} lead={t('projects.lead')} id="projects-title" />
+    <ul class="bento" role="list">
+      {
+        main.map((p, i) => {
+          const chip = loc(p.data.result, lang) || loc(p.data.status, lang);
+          const event = loc(p.data.event, lang);
+          return (
+            <li class:list={['bento-item', `size-${p.data.size}`]} data-reveal style={`--d:${(i % 4) * 0.07}s`}>
+              <a href={projectHref(p, lang)} class="pcard card" data-tilt data-spot aria-label={`${p.data.name} — ${t('projects.open')}`}>
+                {p.data.cover && (
+                  <div class="pcard-media" transition:name={`cover-${p.id}`}>
+                    <Image src={p.data.cover} alt={loc(p.data.coverAlt, lang)} widths={[480, 800, 1200]} sizes={sizesFor(p.data.size)} class="pcard-img" loading="lazy" />
+                  </div>
+                )}
+                <div class="pcard-body">
+                  <div class="pcard-meta">
+                    <span class="font-mono text-[0.7rem] text-[var(--text-mute)]">{String(i + 1).padStart(2, '0')}</span>
+                    {chip && <span class="chip chip-accent pcard-chip" title={chip}>{chip}</span>}
+                  </div>
+                  <p class="pcard-event">{[event, fmtDate(p.data.date, lang)].filter(Boolean).join(' · ')}</p>
+                  <h3 class="pcard-title">{p.data.name}</h3>
+                  <p class="pcard-tagline">{loc(p.data.tagline, lang)}</p>
+                  {p.data.stack.length > 0 && (
+                    <ul class="pcard-stack" aria-label={t('project.stack')}>
+                      {p.data.stack.slice(0, p.data.size === 'sm' ? 3 : 5).map((s) => (
+                        <li class="chip !h-6 !text-[0.66rem]">{s}</li>
+                      ))}
+                    </ul>
+                  )}
+                </div>
+                <span class="pcard-arrow" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" width="18" height="18"><path d="M7 17 17 7m0 0H8.5M17 7v8.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" /></svg>
+                </span>
+              </a>
+            </li>
+          );
+        })
+      }
+    </ul>
+    {
+      more.length > 0 && (
+        <div class="more" data-reveal>
+          <h3 class="eyebrow mb-4">{lang === 'ru' ? 'Ещё проекты' : 'More projects'}</h3>
+          <ul class="more-list" role="list">
+            {more.map((p) => (
+              <li>
+                <a href={projectHref(p, lang)} class="more-row">
+                  <span class="more-name">{p.data.name}</span>
+                  <span class="more-tag">{loc(p.data.tagline, lang)}</span>
+                  <span class="more-meta">{[loc(p.data.event, lang), fmtDate(p.data.date, lang)].filter(Boolean).join(' · ')}</span>
+                  <svg class="more-arrow" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
+                    <path d="M5 12h13m0 0-5.5-5.5M18 12l-5.5 5.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                  </svg>
+                </a>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )
+    }
+  </div>
+</section>
+
+<style>
+  /* ------------------------------------------------------------ grid */
+  .bento {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 1rem;
+  }
+  @media (min-width: 768px) {
+    .bento {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+  @media (min-width: 1100px) {
+    .bento {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      grid-auto-rows: 18rem;
+      grid-auto-flow: dense;
+    }
+    .size-xl {
+      grid-column: span 2;
+      grid-row: span 2;
+    }
+    .size-lg {
+      grid-column: span 2;
+    }
+    .size-md {
+      grid-row: span 2;
+    }
+  }
+  .bento-item {
+    perspective: 1200px;
+  }
+
+  /* ------------------------------------------------------------ card */
+  .pcard {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    overflow: hidden;
+    background: var(--surface);
+    transform-style: preserve-3d;
+    transition:
+      border-color 0.4s,
+      box-shadow 0.5s var(--ease-out-expo);
+  }
+  .pcard:hover {
+    border-color: var(--line-2);
+    box-shadow: 0 30px 80px -40px color-mix(in oklab, var(--accent) 35%, transparent);
+  }
+  /* screenshot in its own framed window, never under the text */
+  .pcard-media {
+    position: relative;
+    margin: 0.55rem 0.55rem 0;
+    aspect-ratio: 16 / 9;
+    overflow: hidden;
+    border-radius: calc(var(--radius) - 0.4rem);
+    border: 1px solid var(--line);
+    background: var(--color-ink-950);
+  }
+  .pcard-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: top center;
+    transition:
+      transform 1.2s var(--ease-out-expo),
+      filter 0.6s;
+    filter: saturate(0.92) brightness(0.92);
+  }
+  .pcard:hover .pcard-img {
+    transform: scale(1.045);
+    filter: none;
+  }
+  .pcard-body {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    padding: 1rem 1.2rem 1.2rem;
+  }
+  .pcard-meta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.8rem;
+    min-width: 0;
+  }
+  .pcard-chip {
+    max-width: 78%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .pcard-event {
+    margin-top: 0.9rem;
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .pcard-title {
+    margin-top: 0.45rem;
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: clamp(1.4rem, 2.1vw, 1.85rem);
+    line-height: 1.02;
+    letter-spacing: -0.035em;
+    transform: translateZ(26px);
+  }
+  .pcard-tagline {
+    margin-top: 0.5rem;
+    max-width: 36rem;
+    padding-right: 2.6rem;
+    font-size: 0.92rem;
+    line-height: 1.5;
+    color: var(--text-dim);
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .pcard-stack {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem;
+    margin-top: auto;
+    padding-top: 0.9rem;
+    padding-right: 2.6rem;
+  }
+  .pcard-arrow {
+    position: absolute;
+    right: 1rem;
+    bottom: 1rem;
+    z-index: 3;
+    display: grid;
+    place-items: center;
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 999px;
+    border: 1px solid var(--line-2);
+    background: rgb(8 9 11 / 0.6);
+    color: var(--text);
+    transition:
+      transform 0.5s var(--ease-out-expo),
+      background-color 0.3s,
+      color 0.3s;
+  }
+  .pcard:hover .pcard-arrow {
+    background: var(--accent);
+    color: var(--accent-ink);
+    transform: rotate(45deg);
+  }
+
+  /* ------------------------------------------- desktop bento variants */
+  @media (min-width: 1100px) {
+    /* big card: tall window on top, text below */
+    .size-xl .pcard-media {
+      aspect-ratio: auto;
+      flex: 1;
+      min-height: 0;
+    }
+    .size-xl .pcard-body {
+      flex: none;
+    }
+    .size-xl .pcard-title {
+      font-size: clamp(2rem, 3.2vw, 3rem);
+    }
+    /* wide card: text left, window right */
+    .size-lg .pcard {
+      flex-direction: row-reverse;
+    }
+    .size-lg .pcard-media {
+      flex: 0 0 48%;
+      aspect-ratio: auto;
+      margin: 0.55rem 0.55rem 0.55rem 0;
+    }
+    .size-lg .pcard-stack,
+    .size-lg .pcard-tagline {
+      padding-right: 0;
+    }
+    .size-lg .pcard-tagline {
+      -webkit-line-clamp: 2;
+    }
+    .size-lg .pcard-arrow {
+      right: auto;
+      left: calc(52% - 3.4rem);
+    }
+    /* small / tall cards: the cover becomes a faint backdrop behind the text */
+    .size-sm .pcard-media,
+    .size-md .pcard-media {
+      position: absolute;
+      inset: 0;
+      margin: 0;
+      aspect-ratio: auto;
+      border: 0;
+      border-radius: 0;
+      opacity: 0.16;
+    }
+    .size-sm .pcard-img,
+    .size-md .pcard-img {
+      filter: grayscale(0.5) blur(1px);
+    }
+    .size-sm .pcard:hover .pcard-media,
+    .size-md .pcard:hover .pcard-media {
+      opacity: 0.26;
+    }
+    .size-sm .pcard-body,
+    .size-md .pcard-body {
+      justify-content: flex-start;
+    }
+    .size-sm .pcard-tagline {
+      -webkit-line-clamp: 2;
+    }
+  }
+
+  /* ------------------------------------------------------- more list */
+  .more {
+    margin-top: 3rem;
+  }
+  .more-list {
+    border-top: 1px solid var(--line);
+  }
+  .more-row {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 0.3rem 1.5rem;
+    align-items: center;
+    padding: 1.1rem 0.4rem;
+    border-bottom: 1px solid var(--line);
+    transition:
+      background-color 0.3s,
+      padding 0.4s var(--ease-out-expo);
+  }
+  .more-row:hover {
+    background: rgb(255 255 255 / 0.025);
+    padding-inline: 1rem;
+  }
+  .more-name {
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 1.15rem;
+    letter-spacing: -0.02em;
+  }
+  .more-tag {
+    grid-column: 1;
+    font-size: 0.9rem;
+    color: var(--text-dim);
+  }
+  .more-meta {
+    grid-column: 1;
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--text-mute);
+  }
+  .more-arrow {
+    grid-column: 2;
+    grid-row: 1 / span 3;
+    color: var(--text-mute);
+    transition:
+      transform 0.4s var(--ease-out-expo),
+      color 0.3s;
+  }
+  .more-row:hover .more-arrow {
+    color: var(--accent);
+    transform: translateX(4px);
+  }
+  @media (min-width: 900px) {
+    .more-row {
+      grid-template-columns: 14rem minmax(0, 1fr) 16rem auto;
+    }
+    .more-name,
+    .more-tag,
+    .more-meta {
+      grid-column: auto;
+    }
+    .more-arrow {
+      grid-column: auto;
+      grid-row: auto;
+    }
+  }
+</style>

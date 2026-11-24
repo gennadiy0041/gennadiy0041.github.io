@@ -1,0 +1,13 @@
+---
+// Print source of /cv/gennadiy-kozlov-en.pdf — rendered by scripts/postbuild.mjs, then removed from dist.
+import Print from '../../../layouts/Print.astro';
+import ResumeDoc from '../../../components/ResumeDoc.astro';
+import { getProfile } from '../../../lib/data';
+import { resumeTitle } from '../../../lib/resume';
+
+const title = resumeTitle(await getProfile(), 'en');
+---
+
+<Print lang="en" title={title}>
+  <ResumeDoc lang="en" />
+</Print>

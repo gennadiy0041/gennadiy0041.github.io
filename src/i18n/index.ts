@@ -39,6 +39,11 @@ export function fmtDate(d: string, lang: Lang, style: 'long' | 'short' = 'long')
   return lang === 'ru' ? `${day} ${MONTHS_GEN_RU[m - 1]} ${y}` : `${MONTHS.en[m - 1]} ${day}, ${y}`;
 }
 
+/** Date of an achievement: «≈ 2024» when the document prints no date and the year is inferred. */
+export function fmtAchDate(d: string, approx: boolean | undefined, lang: Lang, style: 'long' | 'short' = 'long'): string {
+  return approx ? `≈ ${d.slice(0, 4)}` : fmtDate(d, lang, style);
+}
+
 export function yearOf(d: string): number {
   return Number(d.slice(0, 4));
 }
@@ -104,6 +109,7 @@ export const ui = {
     'timeline.filter.wins': 'Только призовые',
     'timeline.empty': 'По этому фильтру ничего нет.',
     'timeline.doc': 'Документ',
+    'timeline.photo': 'Фото',
     'timeline.count': 'показано',
     'certs.eyebrow': 'Документы',
     'certs.title': 'Сертификаты и дипломы',
@@ -186,6 +192,7 @@ export const ui = {
     'timeline.filter.wins': 'Podium only',
     'timeline.empty': 'Nothing matches this filter.',
     'timeline.doc': 'Document',
+    'timeline.photo': 'Photo',
     'timeline.count': 'shown',
     'certs.eyebrow': 'Documents',
     'certs.title': 'Certificates & diplomas',

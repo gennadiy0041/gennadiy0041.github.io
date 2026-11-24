@@ -1,0 +1,1481 @@
+{
+  "version": 1,
+  "files": {
+    "00e441c60189741c012e18e974b2c49f60418c1e35477eb2a10e019fbdd3787e": {
+      "ext": "pdf",
+      "pages": 20,
+      "firstSeen": "2026-11-16",
+      "items": [
+        {
+          "pages": "17",
+          "status": "entry",
+          "entry": "2024-kezen-spartakiad-basketball-2nd"
+        },
+        {
+          "pages": "3,6",
+          "status": "entry",
+          "entry": "2023-ak-bidai-xxxiv-basketball-2nd"
+        },
+        {
+          "pages": "16",
+          "status": "entry",
+          "entry": "2023-ak-bidai-xxxiv-basketball-2nd"
+        },
+        {
+          "pages": "19,20",
+          "status": "entry",
+          "entry": "2022-sunkar-spartakiad-checkers-2nd"
+        },
+        {
+          "pages": "2",
+          "status": "entry",
+          "entry": "2022-ak-bidai-xxxiii-basketball-3rd"
+        },
+        {
+          "pages": "9,11",
+          "status": "entry",
+          "entry": "2019-akmola-youth-basketball-3rd"
+        },
+        {
+          "pages": "8,12",
+          "status": "entry",
+          "entry": "2019-atbasar-kadyrbekov-basketball-2nd"
+        },
+        {
+          "pages": "13",
+          "status": "hidden",
+          "reason": "ask"
+        },
+        {
+          "pages": "1",
+          "status": "entry",
+          "entry": "2018-nauryz-asyk-atu-3rd"
+        },
+        {
+          "pages": "14",
+          "status": "entry",
+          "entry": "2017-shantobe-open-basketball-1st"
+        },
+        {
+          "pages": "18",
+          "status": "entry",
+          "entry": "2017-district-victory-basketball-1st"
+        },
+        {
+          "pages": "15",
+          "status": "entry",
+          "entry": "2017-akmola-school-league-basketball-1st"
+        },
+        {
+          "pages": "7",
+          "status": "entry",
+          "entry": "2024-sandyktau-sport-dept-thanks"
+        },
+        {
+          "pages": "4",
+          "status": "entry",
+          "entry": "2024-feniks-snezhny-desant-thanks"
+        },
+        {
+          "pages": "5,10",
+          "status": "entry",
+          "entry": "2024-discovery-borovoe-thanks"
+        }
+      ]
+    },
+    "010404557020753e6bc2a38f5aaebe563fc8171b25e178e21eac44bc160f1471": {
+      "ext": "jpg",
+      "pages": 1,
+      "firstSeen": "2026-11-16",
+      "items": [
+        {
+          "pages": "all",
+          "status": "entry",
+          "entry": "2025-chgk-myrzakhmetov-winner"
+        }
+      ]
+    },
+    "019e8ddf8856c034d95a0e3b916241aecd5baf63766668e8fbef282980a6c86f": {
+      "ext": "pdf",
+      "pages": 6,
+      "firstSeen": "2026-11-16",
+      "items": [
+        {
+          "pages": "1-6",
+          "status": "hidden",
+          "reason": "not-achievement"
+        }
+      ]
+    },
+    "03fc4bf63fdb8f3bbb67408cde80dd295867c281522c739ac9bd737d3359a329": {
+      "ext": "jpg",
+      "pages": 1,
+      "firstSeen": "2026-11-16",
+      "items": [
+        {
+          "pages": "all",
+          "status": "hidden",
+          "reason": "grades"
+        }
+      ]
+    },
+    "0a284d0a9b930a5f1bcd89f1f2061b2efd46a1171b23fdf46d47ddf353bf19ff": {
+      "ext": "jpeg",
+      "pages": 1,
+      "firstSeen": "2026-11-16",
+      "items": [
+        {
+          "pages": "all",
+          "status": "entry",
+          "entry": "2026-unesa-exchange-semester"
+        }
+      ]
+    },
+    "10114dc1f1904db78b3fdd8c66f1f81c84b35f469fed70be47383d1b9bccc5cc": {
+      "ext": "pdf",
+      "pages": 1,
+      "firstSeen": "2026-11-16",
+      "items": [
+        {
+          "pages": "1",
+          "status": "hidden",
+          "reason": "not-achievement"
+        }
+      ]
+    },
+    "120aad7d092a5298ffddf1db03c45aef031f6ac5c81c0e4366bdac53d738dd86": {
+      "ext": "jpeg",
+      "pages": 1,
+      "firstSeen": "2026-11-16",
+      "items": [
+        {
+          "pages": "all",
+          "status": "hidden",
+          "reason": "grades"
+        }
+      ]
+    },
+    "170e6202719cefc7d8e903f5ec8e6bba365f5cdafe327511e2410c5e65ca457e": {
+      "ext": "jpg",
+      "pages": 1,
+      "firstSeen": "2026-11-16",
+      "items": [
+        {
+          "pages": "all",
+          "status": "entry",
+          "entry": "2025-kokshetau-night-run-5km"
+        }
+      ]
+    },
+    "174f661ebcdc2e46f9d33fac941ecf3d2e6a37f2c223551119886bd1f54823cd": {
+      "ext": "pdf",
+      "pages": 1,
+      "firstSeen": "2026-11-24",
+      "items": [
+        {
+          "pages": "all",
+          "status": "entry",
+          "entry": "2026-ai-in-engineering-hackathon-3rd"
+        }
+      ]
+    },
+    "176a16edf3833bde1e8eb94dbf27214053be724658ab7f4419d011259ddf5445": {
+      "ext": "pdf",
+      "pages": 1,
+      "firstSeen": "2026-11-16",
+      "items": [
+        {
+          "pages": "1",
+          "status": "entry",
+          "entry": "2025-sunkar-universiade-basketball-2nd"
+        }
+      ]
+    },
+    "17973cd788ad1690624713eac54704a33fdbaa420466cd876a2f182163e3743d": {
+      "ext": "pdf",
+      "pages": 31,
+      "firstSeen": "2026-11-16",
+      "items": [
+        {
+          "pages": "28",
+          "status": "entry",
+          "entry": "2025-lerna-skillbox-ai-chatgpt"
+        },
+        {
+          "pages": "30",
+          "status": "entry",
+          "entry": "2025-mooc-kuam-professional-kazakh"
+        },
+        {
+          "pages": "1",
+          "status": "entry",
+          "entry": "2025-sunkar-universiade-basketball-2nd"
+        },
+        {
+          "pages": "31",
+          "status": "entry",
+          "entry": "2025-chgk-myrzakhmetov-winner"
+        },
+        {
+          "pages": "29",
+          "status": "entry",
+          "entry": "2024-mooc-kuam-foreign-language"
+        },
+        {
+          "pages": "27",
+          "status": "entry",
+          "entry": "2024-mir-olimpiad-math-3rd"
+        },
+        {
+          "pages": "24",
+          "status": "entry",
+          "entry": "2024-roundtable-koshkarbayev-centenary"
+        },
+        {
+          "pages": "2",
+          "status": "entry",
+          "entry": "2024-aqmola-power-it-3rd"
+        },
+        {
+          "pages": "23",
+          "status": "entry",
+          "entry": "2024-aqmola-power-it-3rd"
+        },
+        {
+          "pages": "19",
+          "status": "entry",
+          "entry": "2024-kezen-spartakiad-basketball-2nd"
+        },
+        {
+          "pages": "5",
+          "status": "entry",
+          "entry": "2023-ak-bidai-xxxiv-basketball-2nd"
+        },
+        {
+          "pages": "8",
+          "status": "entry",
+          "entry": "2023-ak-bidai-xxxiv-basketball-2nd"
+        },
+        {
+          "pages": "18",
+          "status": "entry",
+          "entry": "2023-ak-bidai-xxxiv-basketball-2nd"
+        },
+        {
+          "pages": "21",
+          "status": "entry",
+          "entry": "2022-sunkar-spartakiad-checkers-2nd"
+        },
+        {
+          "pages": "22",
+          "status": "entry",
+          "entry": "2022-sunkar-spartakiad-checkers-2nd"
+        },
+        {
+          "pages": "4",
+          "status": "entry",
+          "entry": "2022-ak-bidai-xxxiii-basketball-3rd"
+        },
+        {
+          "pages": "11",
+          "status": "entry",
+          "entry": "2019-akmola-youth-basketball-3rd"
+        },
+        {
+          "pages": "13",
+          "status": "entry",
+          "entry": "2019-akmola-youth-basketball-3rd"
+        },
+        {
+          "pages": "10",
+          "status": "entry",
+          "entry": "2019-atbasar-kadyrbekov-basketball-2nd"
+        },
+        {
+          "pages": "14",
+          "status": "entry",
+          "entry": "2019-atbasar-kadyrbekov-basketball-2nd"
+        },
+        {
+          "pages": "15",
+          "status": "hidden",
+          "reason": "ask"
+        },
+        {
+          "pages": "3",
+          "status": "entry",
+          "entry": "2018-nauryz-asyk-atu-3rd"
+        },
+        {
+          "pages": "16",
+          "status": "entry",
+          "entry": "2017-shantobe-open-basketball-1st"
+        },
+        {
+          "pages": "20",
+          "status": "entry",
+          "entry": "2017-district-victory-basketball-1st"
+        },
+        {
+          "pages": "17",
+          "status": "entry",
+          "entry": "2017-akmola-school-league-basketball-1st"
+        },
+        {
+          "pages": "25",
+          "status": "entry",
+          "entry": "2025-iron-club-gym-instructor-course"
+        },
+        {
+          "pages": "9",
+          "status": "entry",
+          "entry": "2024-sandyktau-sport-dept-thanks"
+        },
+        {
+          "pages": "6",
+          "status": "entry",
+          "entry": "2024-feniks-snezhny-desant-thanks"
+        },
+        {
+          "pages": "7",
+          "status": "entry",
+          "entry": "2024-discovery-borovoe-thanks"
+        },
+        {
+          "pages": "12",
+          "status": "entry",
+          "entry": "2024-discovery-borovoe-thanks"
+        },
+        {
+          "pages": "26",
+          "status": "hidden",
+          "reason": "grades"
+        }
+      ]
+    },
+    "1fe9e2ca55699e68d2611da325a31da6ccaaee3b0ae006ccc97d1b04af4cdfbd": {
+      "ext": "jpg",
+      "pages": 1,
+      "firstSeen": "2026-11-16",
+      "items": [
+        {
+          "pages": "all",
+          "status": "entry",
+          "entry": "2022-sunkar-spartakiad-checkers-2nd"
+        }
+      ]
+    },
+    "2065a189e0a8e487571cfa97ce042d0e46e386899fc8ca7b1d5c177ddf72a58d": {
+      "ext": "pdf",
+      "pages": 1,
+      "firstSeen": "2026-11-16",
+      "items": [
+        {
+          "pages": "1",
+          "status": "entry",
+          "entry": "2024-mooc-kuam-foreign-language"
+        }
+      ]
+    },
+    "2605e273ef4c63b0055e42f62a87a8db8b888df4226b94c5f789383f39458305": {
+      "ext": "pdf",
+      "pages": 1,
+      "firstSeen": "2026-11-16",
+      "items": [
+        {
+          "pages": "1",
+          "status": "entry",
+          "entry": "2025-lerna-skillbox-ai-chatgpt"
+        }
+      ]
+    },
+    "26388224d5607136060e2f86ec986c6744ef7e393ba2f1ff13844df66f9dad16": {
+      "ext": "jpeg",
+      "pages": 1,
+      "firstSeen": "2026-11-16",
+      "items": [
+        {
+          "pages": "all",
+          "status": "hidden",
+          "reason": "grades"
+        }
+      ]
+    },
+    "2799ffcd4e442b7880309a1702c10be059b34f0188739e59013fd6752bb510a3": {
+      "ext": "jpg",
+      "pages": 1,
+      "firstSeen": "2026-11-16",
+      "items": [
+        {
+          "pages": "all",
+          "status": "hidden",
+          "reason": "photo"
+        }
+      ]
+    },
+    "29ab2878dc00f8261929d97bdef4faeac1340d7e5d2b6675b57703db9377f0ea": {
+      "ext": "png",
+      "pages": 1,
+      "firstSeen": "2026-11-16",
+      "items": [
+        {
+          "pages": "all",
+          "status": "entry",
+          "entry": "2025-skillbox-chatgpt-neuroassistant"
+        }
+      ]
+    },
+    "2a0286bf1556775f95dff825192952d581c66fb43b392055a75ab09bb68c928d": {
+      "ext": "pdf",
+      "pages": 1,
+      "firstSeen": "2026-11-16",
+      "items": [
+        {
+          "pages": "1",
+          "status": "entry",
+          "entry": "2026-mooc-kuam-radiation-safety"
+        }
+      ]
+    },
+    "2c78293bff1b2a205523ef459c848a0bf9d0d8dc4bad572450df33f1c8c9e186": {
+      "ext": "pdf",
+      "pages": 4,
+      "firstSeen": "2026-11-16",
+      "items": [
+        {
+          "pages": "1-4",
+          "status": "entry",
+          "entry": "2026-kuam-conference-env-life-safety"
+        }
+      ]
+    },
+    "2e289958df1f2b76ba7cf752e6b8ce06cac8f340c46cc32bbf2ab570efd0fb4d": {
+      "ext": "jpg",
+      "pages": 1,
+      "firstSeen": "2026-11-16",
+      "items": [
+        {
+          "pages": "all",
+          "status": "entry",
+          "entry": "2019-akmola-youth-basketball-3rd"
+        }
+      ]
+    },
+    "327b3f4cd28ad6d0ffcdb440a3b7374061e33dc1efe8cd3576ae9f597afbdd07": {
+      "ext": "jpg",
+      "pages": 1,
+      "firstSeen": "2026-11-16",
+      "items": [
+        {
+          "pages": "all",
+          "status": "entry",
+          "entry": "2017-akmola-school-league-basketball-1st"
+        }
+      ]
+    },
+    "3e3a147ee684de6a2abfb15c317e16752a1d65390da761400cb1bc76b737f250": {
+      "ext": "jpg",
+      "pages": 1,
+      "firstSeen": "2026-11-16",
+      "items": [
+        {
+          "pages": "all",
+          "status": "entry",
+          "entry": "2025-roundtable-env-life-safety"
+        }
+      ]
+    },
+    "3ed0d9a6fdb3825f2251c3aeb6a68281df14e1167ffa4e0d3f8385b06bb03992": {
+      "ext": "jpeg",
+      "pages": 1,
+      "firstSeen": "2026-11-16",
+      "items": [
+        {
+          "pages": "all",
+          "status": "entry",
+          "entry": "2026-waktu-indonesia-berlari-42km"
+        }
+      ]
+    },
+    "4013223ed0bd59f518f454fb074669a0f78792a55145602141b9fd4e4a949daa": {
+      "ext": "pdf",
+      "pages": 2,
+      "firstSeen": "2026-11-16",
+      "items": [
+        {
+          "pages": "1-2",
+          "status": "hidden",
+          "reason": "grades"
+        }
+      ]
+    },
+    "41adfe9e3739d681b3e283540d5e32e0f0582259ec574d1802cd33342a49d627": {
+      "ext": "jpg",
+      "pages": 1,
+      "firstSeen": "2026-11-16",
+      "items": [
+        {
+          "pages": "all",
+          "status": "hidden",
+          "reason": "grades"
+        }
+      ]
+    },
+    "43417cec5120d959e472fdfe36588e72c40c589a047176ffcd1de36154f633da": {
+      "ext": "pdf",
+      "pages": 1,
+      "firstSeen": "2026-11-16",
+      "items": [
+        {
+          "pages": "1",
+          "status": "hidden",
+          "reason": "duplicate"
+        }
+      ]
+    },
+    "46bfa9e639da53839f169d4684d21146fe599f19ddcf32a07db33c2dce345654": {
+      "ext": "pdf",
+      "pages": 1,
+      "firstSeen": "2026-11-16",
+      "items": [
+        {
+          "pages": "1",
+          "status": "entry",
+          "entry": "2026-unesa-exchange-semester"
+        }
+      ]
+    },
+    "5066a2da652e80108002afb3f7e09318b57f6975be3abaa083754ef3b1899e53": {
+      "ext": "pdf",
+      "pages": 1,
+      "firstSeen": "2026-11-16",
+      "items": [
+        {
+          "pages": "1",
+          "status": "entry",
+          "entry": "2024-aqmola-power-it-3rd"
+        },
+        {
+          "pages": "1",
+          "status": "hidden",
+          "reason": "ask"
+        }
+      ]
+    },
+    "50746166557dd3da6bd1a479b413200cd99d703ddb2654beaf60f0bab084be83": {
+      "ext": "pdf",
+      "pages": 23,
+      "firstSeen": "2026-11-16",
+      "items": [
+        {
+          "pages": "4",
+          "status": "entry",
+          "entry": "2025-agz-xvi-conference-paper"
+        },
+        {
+          "pages": "21",
+          "status": "entry",
+          "entry": "2025-lerna-skillbox-ai-chatgpt"
+        },
+        {
+          "pages": "23",
+          "status": "entry",
+          "entry": "2025-mooc-kuam-professional-kazakh"
+        },
+        {
+          "pages": "7",
+          "status": "entry",
+          "entry": "2025-roundtable-env-life-safety"
+        },
+        {
+          "pages": "6",
+          "status": "entry",
+          "entry": "2025-sunkar-universiade-basketball-2nd"
+        },
+        {
+          "pages": "18",
+          "status": "entry",
+          "entry": "2025-sunkar-universiade-checkers-3rd"
+        },
+        {
+          "pages": "5",
+          "status": "entry",
+          "entry": "2025-chgk-myrzakhmetov-winner"
+        },
+        {
+          "pages": "22",
+          "status": "entry",
+          "entry": "2024-mooc-kuam-foreign-language"
+        },
+        {
+          "pages": "1",
+          "status": "entry",
+          "entry": "2024-mir-olimpiad-math-3rd"
+        },
+        {
+          "pages": "9",
+          "status": "entry",
+          "entry": "2024-roundtable-koshkarbayev-centenary"
+        },
+        {
+          "pages": "19",
+          "status": "entry",
+          "entry": "2024-aqmola-power-it-3rd"
+        },
+        {
+          "pages": "2",
+          "status": "entry",
+          "entry": "2024-aqmola-power-it-3rd"
+        },
+        {
+          "pages": "15",
+          "status": "entry",
+          "entry": "2024-kezen-spartakiad-basketball-2nd"
+        },
+        {
+          "pages": "10",
+          "status": "entry",
+          "entry": "2024-arna-college-excellence-award"
+        },
+        {
+          "pages": "16",
+          "status": "entry",
+          "entry": "2023-ak-bidai-xxxiv-basketball-2nd"
+        },
+        {
+          "pages": "17",
+          "status": "entry",
+          "entry": "2023-sandyktau-akim-sports-day-thanks"
+        },
+        {
+          "pages": "20",
+          "status": "entry",
+          "entry": "2022-sunkar-spartakiad-checkers-2nd"
+        },
+        {
+          "pages": "3",
+          "status": "entry",
+          "entry": "2019-school-informatics-olympiad-2nd"
+        },
+        {
+          "pages": "14",
+          "status": "entry",
+          "entry": "2019-akmola-youth-basketball-3rd"
+        },
+        {
+          "pages": "13",
+          "status": "entry",
+          "entry": "2017-akmola-school-league-basketball-1st"
+        },
+        {
+          "pages": "11",
+          "status": "entry",
+          "entry": "2025-iron-club-gym-instructor-course"
+        },
+        {
+          "pages": "8",
+          "status": "hidden",
+          "reason": "grades"
+        },
+        {
+          "pages": "12",
+          "status": "hidden",
+          "reason": "grades"
+        }
+      ]
+    },
+    "511633bf35443ba734895323225311edd132032e11c60d9e065714d4fff529c5": {
+      "ext": "pdf",
+      "pages": 2,
+      "firstSeen": "2026-11-16",
+      "items": [
+        {
+          "pages": "1-2",
+          "status": "entry",
+          "entry": "2026-astanahub-beta-career"
+        }
+      ]
+    },
+    "51cbf7c08060a2209a0f2508f5afc02d5d15db939b044b6f5b85be48b28b42f8": {
+      "ext": "jpg",
+      "pages": 1,
+      "firstSeen": "2026-11-16",
+      "items": [
+        {
+          "pages": "all",
+          "status": "entry",
+          "entry": "2024-aqmola-power-it-3rd"
+        }
+      ]
+    },
+    "555d075e3c920b5d589b1d5300c553d352bec087e86fb37e1544725ab6be1657": {
+      "ext": "jpg",
+      "pages": 1,
+      "firstSeen": "2026-11-16",
+      "items": [
+        {
+          "pages": "all",
+          "status": "entry",
+          "entry": "2023-ak-bidai-xxxiv-basketball-2nd"
+        }
+      ]
+    },
+    "590eed57103290355e2f0f6f31c4ec7de66858d226aef595fcfd09d5d86f7c34": {
+      "ext": "pdf",
+      "pages": 1,
+      "firstSeen": "2026-11-16",
+      "items": [
+        {
+          "pages": "1",
+          "status": "entry",
+          "entry": "2026-ai-sana-phase-2"
+        }
+      ]
+    },
+    "5b017fcc8f7539a56c9099318ad8e014a9f21a213b04649deed632721678ad29": {
+      "ext": "pdf",
+      "pages": 1,
+      "firstSeen": "2026-11-16",
+      "items": [
+        {
+          "pages": "1",
+          "status": "entry",
+          "entry": "2026-coursera-google-tech-support"
+        }
+      ]
+    },
+    "5d34e15ba89c13da275f9df964471473ef9e97a677a39fc0453e082db933283a": {
+      "ext": "pdf",
+      "pages": 1,
+      "firstSeen": "2026-11-16",
+      "items": [
+        {
+          "pages": "1",
+          "status": "entry",
+          "entry": "2025-chgk-myrzakhmetov-winner"
+        }
+      ]
+    },
+    "5f74d4b5992c923a5b6ea8b725bc4d8b99205ef330207fde946e5c21df76ecc1": {
+      "ext": "jpg",
+      "pages": 1,
+      "firstSeen": "2026-11-16",
+      "items": [
+        {
+          "pages": "all",
+          "status": "hidden",
+          "reason": "ask"
+        }
+      ]
+    },
+    "625c7f1af694a0b09b44e7e81b37db99401d83fe533f9434ecd1a8d920a94081": {
+      "ext": "jpg",
+      "pages": 1,
+      "firstSeen": "2026-11-16",
+      "items": [
+        {
+          "pages": "all",
+          "status": "hidden",
+          "reason": "ask"
+        }
+      ]
+    },
+    "64ba8c132f16fd4edeecd80d3affecb29d359004bebd7264568333dd2eb6ba5b": {
+      "ext": "jpg",
+      "pages": 1,
+      "firstSeen": "2026-11-16",
+      "items": [
+        {
+          "pages": "all",
+          "status": "entry",
+          "entry": "2024-aqmola-power-it-3rd"
+        }
+      ]
+    },
+    "67199f8167f82a7f88810da2dc67c2e797c6bb2f2f22098998f0e7ab1a507fb6": {
+      "ext": "jpg",
+      "pages": 1,
+      "firstSeen": "2026-11-16",
+      "items": [
+        {
+          "pages": "all",
+          "status": "entry",
+          "entry": "2024-mir-olimpiad-math-3rd"
+        }
+      ]
+    },
+    "7275f23ae4d68e27a4d90572341a0723c4a315107e4f4eb6fba235fe9b42cea8": {
+      "ext": "pdf",
+      "pages": 2,
+      "firstSeen": "2026-11-16",
+      "items": [
+        {
+          "pages": "1-2",
+          "status": "entry",
+          "entry": "2026-astanahub-freelance-school"
+        }
+      ]
+    },
+    "73e905eee6c3b50bfe5bc2ebdc10b97ceba5e6c655124185aa8e26be0960d137": {
+      "ext": "pdf",
+      "pages": 5,
+      "firstSeen": "2026-11-16",
+      "items": [
+        {
+          "pages": "5",
+          "status": "entry",
+          "entry": "2024-mir-olimpiad-math-3rd"
+        },
+        {
+          "pages": "2",
+          "status": "entry",
+          "entry": "2024-roundtable-koshkarbayev-centenary"
+        },
+        {
+          "pages": "1",
+          "status": "entry",
+          "entry": "2024-aqmola-power-it-3rd"
+        },
+        {
+          "pages": "3",
+          "status": "entry",
+          "entry": "2025-iron-club-gym-instructor-course"
+        },
+        {
+          "pages": "4",
+          "status": "hidden",
+          "reason": "grades"
+        }
+      ]
+    },
+    "747f5ce66bb16c738f25940e4f7b1fdcf408eacd4af1f7cb459f20c9b22c3e4f": {
+      "ext": "pdf",
+      "pages": 1,
+      "firstSeen": "2026-11-16",
+      "items": [
+        {
+          "pages": "1",
+          "status": "entry",
+          "entry": "2026-mooc-kuam-chemical-analysis"
+        }
+      ]
+    },
+    "74ee3ca7815c070bb213551c5135d8da09b5f90716812cd8771ef2adea5e5862": {
+      "ext": "jpg",
+      "pages": 1,
+      "firstSeen": "2026-11-16",
+      "items": [
+        {
+          "pages": "all",
+          "status": "hidden",
+          "reason": "grades"
+        }
+      ]
+    },
+    "758ecf4878917f80939c088cc0451d18cb6cb457b28a6ce58cdfef763cc7cf1c": {
+      "ext": "jpg",
+      "pages": 1,
+      "firstSeen": "2026-11-16",
+      "items": [
+        {
+          "pages": "all",
+          "status": "hidden",
+          "reason": "grades"
+        }
+      ]
+    },
+    "75a1475f9f5b70dfc5d0d7f83a25253f6445a17d77da8de5505c7810def95e25": {
+      "ext": "jpg",
+      "pages": 1,
+      "firstSeen": "2026-11-16",
+      "items": [
+        {
+          "pages": "all",
+          "status": "hidden",
+          "reason": "photo"
+        }
+      ]
+    },
+    "79bac24331ce8a36c9235d63fa2fa8951a33ac97cb43e8e1134ac360319ba71d": {
+      "ext": "pdf",
+      "pages": 1,
+      "firstSeen": "2026-11-16",
+      "items": [
+        {
+          "pages": "1",
+          "status": "entry",
+          "entry": "2025-mooc-kuam-professional-kazakh"
+        }
+      ]
+    },
+    "7c019ca7871ff9714aa10f3a9a7b0ba5b3abbafc5f0a169567f75279e0c882bd": {
+      "ext": "jpeg",
+      "pages": 1,
+      "firstSeen": "2026-11-16",
+      "items": [
+        {
+          "pages": "all",
+          "status": "hidden",
+          "reason": "grades"
+        }
+      ]
+    },
+    "7d9c6fd8d8293c69dc3a8b4271f98a93aea576d8e10180131b8b49dd65efa54a": {
+      "ext": "jpg",
+      "pages": 1,
+      "firstSeen": "2026-11-16",
+      "items": [
+        {
+          "pages": "all",
+          "status": "entry",
+          "entry": "2025-sunkar-universiade-basketball-2nd"
+        }
+      ]
+    },
+    "8132e45fae27b3c136910caadb8d2c45b63981ac4223ae7403c59530ed44948c": {
+      "ext": "jpg",
+      "pages": 1,
+      "firstSeen": "2026-11-16",
+      "items": [
+        {
+          "pages": "all",
+          "status": "hidden",
+          "reason": "photo"
+        }
+      ]
+    },
+    "8279f942032207df870f5813bac7792142a6b28f0d6f3ee20fb1694050a2d61a": {
+      "ext": "jpg",
+      "pages": 1,
+      "firstSeen": "2026-11-16",
+      "items": [
+        {
+          "pages": "all",
+          "status": "entry",
+          "entry": "2023-sandyktau-akim-sports-day-thanks"
+        }
+      ]
+    },
+    "83f3ec58d5c468f288fb140431fb1e62fbfb77216ee1c2b2d188bb8ac8be4fda": {
+      "ext": "pdf",
+      "pages": 1,
+      "firstSeen": "2026-11-24",
+      "items": [
+        {
+          "pages": "all",
+          "status": "entry",
+          "entry": "2026-ai-in-engineering-hackathon-3rd"
+        }
+      ]
+    },
+    "84acc1b925d0091304212cbfcf35db263c05d1f2fb9a244d69ba366f3f142540": {
+      "ext": "pdf",
+      "pages": 1,
+      "firstSeen": "2026-11-16",
+      "items": [
+        {
+          "pages": "1",
+          "status": "entry",
+          "entry": "2026-mooc-kuam-fire-safety"
+        }
+      ]
+    },
+    "8aa51306ac3f8532ef1bbe009187090df479de212e32f446ace8e743e580bdab": {
+      "ext": "jpg",
+      "pages": 1,
+      "firstSeen": "2026-11-16",
+      "items": [
+        {
+          "pages": "all",
+          "status": "entry",
+          "entry": "2024-roundtable-koshkarbayev-centenary"
+        }
+      ]
+    },
+    "94d9b9ffe5d1dbb963e6d2333678e729456faef93ce387ed8f712317943851a8": {
+      "ext": "jpg",
+      "pages": 1,
+      "firstSeen": "2026-11-16",
+      "items": [
+        {
+          "pages": "all",
+          "status": "hidden",
+          "reason": "grades"
+        }
+      ]
+    },
+    "978db5c5cf360ee2e1fc2bfe825162cd1deaacca76ffa575d747782d1e51ef6d": {
+      "ext": "jpg",
+      "pages": 1,
+      "firstSeen": "2026-11-16",
+      "items": [
+        {
+          "pages": "all",
+          "status": "entry",
+          "entry": "2025-sunkar-universiade-basketball-2nd"
+        }
+      ]
+    },
+    "9a686b5d26db341fa488ccee1dcc7969f0a9bade125afed09f05939108021f3d": {
+      "ext": "pdf",
+      "pages": 2,
+      "firstSeen": "2026-11-16",
+      "items": [
+        {
+          "pages": "1-2",
+          "status": "hidden",
+          "reason": "not-achievement"
+        }
+      ]
+    },
+    "9bac6724c8f9751cf403ef53d8183ad5bc75c6de990a7be7a25638c327399c92": {
+      "ext": "jpeg",
+      "pages": 1,
+      "firstSeen": "2026-11-16",
+      "items": [
+        {
+          "pages": "all",
+          "status": "entry",
+          "entry": "2026-unesa-exchange-semester"
+        }
+      ]
+    },
+    "9d341e6c1096753b532bf00dc408a36f26e82ff1a40f2f59ea10ff5c28415888": {
+      "ext": "jpg",
+      "pages": 1,
+      "firstSeen": "2026-11-16",
+      "items": [
+        {
+          "pages": "all",
+          "status": "entry",
+          "entry": "2024-kezen-spartakiad-basketball-2nd"
+        }
+      ]
+    },
+    "9faf730f0644268363d7da266f7d42a14291f491d348107e7b1c09264d481ffc": {
+      "ext": "jpg",
+      "pages": 1,
+      "firstSeen": "2026-11-16",
+      "items": [
+        {
+          "pages": "all",
+          "status": "entry",
+          "entry": "2023-sandyktau-akim-sports-day-thanks"
+        }
+      ]
+    },
+    "a0b5420b6ad95023a314ddf841ad6318e708a728898bdc311b36912c2a7b1f5d": {
+      "ext": "jpg",
+      "pages": 1,
+      "firstSeen": "2026-11-16",
+      "items": [
+        {
+          "pages": "all",
+          "status": "entry",
+          "entry": "2024-kezen-spartakiad-basketball-2nd"
+        }
+      ]
+    },
+    "a4fd0603d56f21fef099811da22256a294e6b804e278a5c65c830f136c80f570": {
+      "ext": "jpg",
+      "pages": 1,
+      "firstSeen": "2026-11-16",
+      "items": [
+        {
+          "pages": "all",
+          "status": "entry",
+          "entry": "2024-arna-college-excellence-award"
+        }
+      ]
+    },
+    "a5b07daa94c67d3ca9243bda14d1aa155f4b24d1046cbf671e88d364616ecc5e": {
+      "ext": "pdf",
+      "pages": 1,
+      "firstSeen": "2026-11-16",
+      "items": [
+        {
+          "pages": "1",
+          "status": "entry",
+          "entry": "2026-national-founder-cup-finalist"
+        }
+      ]
+    },
+    "a87449f1d2290337c23cc833cb515f36d02d45a651a92254d07babc004739d57": {
+      "ext": "pdf",
+      "pages": 1,
+      "firstSeen": "2026-11-16",
+      "items": [
+        {
+          "pages": "1",
+          "status": "entry",
+          "entry": "2025-ef-set-c1"
+        }
+      ]
+    },
+    "aaa503a24105c6b0e4ddeb932e573ee46382a2122eb06d3b91368ea0a121cfa1": {
+      "ext": "jpg",
+      "pages": 1,
+      "firstSeen": "2026-11-16",
+      "items": [
+        {
+          "pages": "all",
+          "status": "entry",
+          "entry": "2024-aqmola-power-it-3rd"
+        }
+      ]
+    },
+    "ac149ce7252c4398858a3016deb2b46c48901260e2e547f6c66cba028d655bd3": {
+      "ext": "pdf",
+      "pages": 1,
+      "firstSeen": "2026-11-16",
+      "items": [
+        {
+          "pages": "1",
+          "status": "hidden",
+          "reason": "grades"
+        }
+      ]
+    },
+    "ae2f988c215bd344ce2091b6204fb92d52e95e811722cdfd435606603acb4141": {
+      "ext": "jpg",
+      "pages": 1,
+      "firstSeen": "2026-11-16",
+      "items": [
+        {
+          "pages": "all",
+          "status": "entry",
+          "entry": "2025-sunkar-universiade-checkers-3rd"
+        }
+      ]
+    },
+    "ae76d8f341907dba86dc70d674437d1d0657f12b6b2318bdbf546677eff4bdb8": {
+      "ext": "jpg",
+      "pages": 1,
+      "firstSeen": "2026-11-16",
+      "items": [
+        {
+          "pages": "all",
+          "status": "hidden",
+          "reason": "grades"
+        }
+      ]
+    },
+    "aeaa0868781179fb1c7620dfe50cd722bc9fe643bf905c7cc09ece7c7a9a8138": {
+      "ext": "pdf",
+      "pages": 1,
+      "firstSeen": "2026-11-16",
+      "items": [
+        {
+          "pages": "1",
+          "status": "entry",
+          "entry": "2024-aqmola-power-it-3rd"
+        }
+      ]
+    },
+    "b2bf730cb162c29bd07d766ae510b5d9d9aebfb59889579c8a46df5e9231aa64": {
+      "ext": "jpg",
+      "pages": 1,
+      "firstSeen": "2026-11-16",
+      "items": [
+        {
+          "pages": "all",
+          "status": "entry",
+          "entry": "2024-kezen-spartakiad-basketball-2nd"
+        }
+      ]
+    },
+    "b2faaf14a36142b1992af530011200282483631a8a6aed78629cd97cdd61d1fc": {
+      "ext": "jpg",
+      "pages": 1,
+      "firstSeen": "2026-11-16",
+      "items": [
+        {
+          "pages": "all",
+          "status": "entry",
+          "entry": "2022-sunkar-spartakiad-checkers-2nd"
+        }
+      ]
+    },
+    "bdcbf1ec72a10f590812e8220d8797229771f9c6a9b070e6aea805c72745b302": {
+      "ext": "jpg",
+      "pages": 1,
+      "firstSeen": "2026-11-16",
+      "items": [
+        {
+          "pages": "all",
+          "status": "entry",
+          "entry": "2024-aqmola-power-it-3rd"
+        }
+      ]
+    },
+    "c4005b009195e008ab375d0422f6e593d0b93e1e0b03377755b5c5207dad2026": {
+      "ext": "jpeg",
+      "pages": 1,
+      "firstSeen": "2026-11-16",
+      "items": [
+        {
+          "pages": "all",
+          "status": "hidden",
+          "reason": "grades"
+        }
+      ]
+    },
+    "c8563ab1875730e721a60c248b2a439d23da03521b7f12b7902175512ff5aeb9": {
+      "ext": "pdf",
+      "pages": 1,
+      "firstSeen": "2026-11-16",
+      "items": [
+        {
+          "pages": "1",
+          "status": "entry",
+          "entry": "2026-aqmola-power-participation"
+        }
+      ]
+    },
+    "cabf5f572606147cdc1daf41b7d74d4900f6554aadcf9492698dac515cdafc09": {
+      "ext": "jpeg",
+      "pages": 1,
+      "firstSeen": "2026-11-16",
+      "items": [
+        {
+          "pages": "all",
+          "status": "entry",
+          "entry": "2026-sunkar-universiade-chess-3rd"
+        }
+      ]
+    },
+    "cba0e024cd14ddb092941366d7432b041558927492b251383872fb39369407c6": {
+      "ext": "docx",
+      "pages": 1,
+      "firstSeen": "2026-11-16",
+      "items": [
+        {
+          "pages": "all",
+          "status": "hidden",
+          "reason": "not-achievement"
+        }
+      ]
+    },
+    "cdb5f5734b1ae22eac7745088930d03cb4def08d11e75034f3504ae64c965658": {
+      "ext": "jpg",
+      "pages": 1,
+      "firstSeen": "2026-11-16",
+      "items": [
+        {
+          "pages": "all",
+          "status": "entry",
+          "entry": "2025-iron-club-gym-instructor-course"
+        }
+      ]
+    },
+    "d01ccc055c56f4ad9c20e87c7e5d526fcee14f1c1444d506e5f5f5392204344c": {
+      "ext": "jpg",
+      "pages": 1,
+      "firstSeen": "2026-11-16",
+      "items": [
+        {
+          "pages": "all",
+          "status": "entry",
+          "entry": "2024-mir-olimpiad-math-3rd"
+        }
+      ]
+    },
+    "d269bec30fa0265dc0a01259bbf4422255674371bfc0e6edad4cf8e6f7e7b06b": {
+      "ext": "pdf",
+      "pages": 1,
+      "firstSeen": "2026-11-24",
+      "items": [
+        {
+          "pages": "all",
+          "status": "entry",
+          "entry": "2026-ai-in-engineering-hackathon-3rd"
+        }
+      ]
+    },
+    "df422b496f732a01ca0b4aa5bc23136df3882d567d9ed86847d0e16aa2ddd061": {
+      "ext": "jpg",
+      "pages": 1,
+      "firstSeen": "2026-11-16",
+      "items": [
+        {
+          "pages": "all",
+          "status": "entry",
+          "entry": "2026-unesa-exchange-semester"
+        }
+      ]
+    },
+    "df5d9784d905d9c250f644362011acd98f04a49b12b25bdc8adb5b743a60ffd0": {
+      "ext": "jpg",
+      "pages": 1,
+      "firstSeen": "2026-11-16",
+      "items": [
+        {
+          "pages": "all",
+          "status": "entry",
+          "entry": "2025-agz-xvi-conference-paper"
+        }
+      ]
+    },
+    "e51d3152300ac59b7db2fdb598645d6dce3389ac7b794ef10f4068573fd9ccb6": {
+      "ext": "jpg",
+      "pages": 1,
+      "firstSeen": "2026-11-16",
+      "items": [
+        {
+          "pages": "all",
+          "status": "entry",
+          "entry": "2024-aqmola-power-it-3rd"
+        }
+      ]
+    },
+    "e577a2e67333f3d3785fdcde6aed0ed6880e5da8e6ebdb3dc21702fd14124d0e": {
+      "ext": "jpg",
+      "pages": 1,
+      "firstSeen": "2026-11-16",
+      "items": [
+        {
+          "pages": "all",
+          "status": "entry",
+          "entry": "2019-school-informatics-olympiad-2nd"
+        }
+      ]
+    },
+    "e5861ee2fd63747704a4ff94191630f237afeda2f2c4ebf0499217c9f92465fc": {
+      "ext": "jpg",
+      "pages": 1,
+      "firstSeen": "2026-11-16",
+      "items": [
+        {
+          "pages": "all",
+          "status": "hidden",
+          "reason": "photo"
+        }
+      ]
+    },
+    "e74f0cdb78cf917451b3d068803017103bc0fa00b5043c7b9b34976a019c63c6": {
+      "ext": "pdf",
+      "pages": 1,
+      "firstSeen": "2026-11-16",
+      "items": [
+        {
+          "pages": "1",
+          "status": "entry",
+          "entry": "2026-unesa-exchange-semester"
+        }
+      ]
+    },
+    "e8b3640757238d27b0f1f48fd4ce1f09ff6614fe47cce7d5d017ec43dd49baac": {
+      "ext": "pdf",
+      "pages": 1,
+      "firstSeen": "2026-11-16",
+      "items": [
+        {
+          "pages": "1",
+          "status": "hidden",
+          "reason": "not-achievement"
+        }
+      ]
+    },
+    "eb5e719a74d705904253b9abc640f0cba890791fb1cc91ef2930b3bfc1db2dd1": {
+      "ext": "jpeg",
+      "pages": 1,
+      "firstSeen": "2026-11-16",
+      "items": [
+        {
+          "pages": "all",
+          "status": "hidden",
+          "reason": "grades"
+        }
+      ]
+    },
+    "ebec7272ba664e42f394e5f166164b89fb3f653ee260658a20955542f6bc8685": {
+      "ext": "jpeg",
+      "pages": 1,
+      "firstSeen": "2026-11-16",
+      "items": [
+        {
+          "pages": "all",
+          "status": "hidden",
+          "reason": "grades"
+        }
+      ]
+    },
+    "ecf23be11620f7363b3170b6bd903da98b836a0970fcfb4b1c8d1fc5147f9822": {
+      "ext": "jpg",
+      "pages": 1,
+      "firstSeen": "2026-11-16",
+      "items": [
+        {
+          "pages": "all",
+          "status": "hidden",
+          "reason": "grades"
+        }
+      ]
+    },
+    "edfaaa27d7d522610a677d5b19b280c2d826b5f3f6ee76fe7d6d3c344dc43678": {
+      "ext": "pdf",
+      "pages": 2,
+      "firstSeen": "2026-11-16",
+      "items": [
+        {
+          "pages": "1-2",
+          "status": "entry",
+          "entry": "2026-astanahub-prompt-engineering"
+        }
+      ]
+    },
+    "ef0374539e8cc2a035ccb844451879c7f3deee891bcef13e5c501dbc24566409": {
+      "ext": "jpg",
+      "pages": 1,
+      "firstSeen": "2026-11-16",
+      "items": [
+        {
+          "pages": "all",
+          "status": "hidden",
+          "reason": "grades"
+        }
+      ]
+    },
+    "f43528ef9043e85d7347ce04e59463d3eec8597ba5f2346687599eaa9fb49de5": {
+      "ext": "jpg",
+      "pages": 1,
+      "firstSeen": "2026-11-16",
+      "items": [
+        {
+          "pages": "all",
+          "status": "entry",
+          "entry": "2024-aqmola-power-it-3rd"
+        },
+        {
+          "pages": "all",
+          "status": "hidden",
+          "reason": "not-achievement"
+        }
+      ]
+    },
+    "f596d9370714b524d37d40a82925bf78fd536fb3eed377e59724178ca37ce542": {
+      "ext": "jpg",
+      "pages": 1,
+      "firstSeen": "2026-11-16",
+      "items": [
+        {
+          "pages": "all",
+          "status": "entry",
+          "entry": "2024-aqmola-power-it-3rd"
+        }
+      ]
+    },
+    "f79dba6737a4c5e18387470a901e508afe5a903e1bd4efa6f3e0cd3eedfdf081": {
+      "ext": "jpg",
+      "pages": 1,
+      "firstSeen": "2026-11-16",
+      "items": [
+        {
+          "pages": "all",
+          "status": "entry",
+          "entry": "2025-skillbox-chatgpt-neuroassistant"
+        }
+      ]
+    }
+  }
+}

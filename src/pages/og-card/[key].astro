@@ -1,0 +1,29 @@
+---
+/**
+ * Screenshot sources for the social cards: /og-card/<lang>-home/ and /og-card/<lang>-project-<id>/.
+ * scripts/postbuild.mjs captures each at 1200×630 into /og/<key>.png and removes these pages.
+ */
+import type { GetStaticPaths, InferGetStaticPropsType } from 'astro';
+import Print from '../../layouts/Print.astro';
+import OgCard from '../../components/og/OgCard.astro';
+import { getProfile, getProjects } from '../../lib/data';
+import { LANGS, loc } from '../../i18n';
+
+export const getStaticPaths = (async () => {
+  const projects = await getProjects();
+  return LANGS.flatMap((lang) => [
+    { params: { key: `${lang}-home` }, props: { lang, project: undefined } },
+    ...projects.map((project) => ({ params: { key: `${lang}-project-${project.id}` }, props: { lang, project } })),
+  ]);
+}) satisfies GetStaticPaths;
+
+type Props = InferGetStaticPropsType<typeof getStaticPaths>;
+
+const { lang, project } = Astro.props;
+const name = loc((await getProfile()).name, lang);
+const title = project ? `${project.data.name} — ${name}` : name;
+---
+
+<Print lang={lang} title={title} scheme="dark">
+  <OgCard lang={lang} project={project} />
+</Print>

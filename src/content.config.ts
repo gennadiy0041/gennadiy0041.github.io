@@ -48,13 +48,19 @@ const achievements = defineCollection({
     z.object({
       title: L,
       event: Lopt,
+      /** short name for the "where I have competed and spoken" strip, e.g. «National Founder Cup · Шымкент» */
+      venue: Lopt,
       issuer: Lopt,
       date: PartialDate,
+      /** the document prints no date: `date` holds the year inferred from context and is shown as «≈ 2024» */
+      dateApprox: z.boolean().default(false),
       category: z.enum(CATEGORIES),
       level: z.enum(LEVELS).default('unknown'),
       result: Lopt,
       description: Lopt,
       image: image().optional(),
+      /** "photo" — the image is a photo from the event (shown as a photo, not in the documents grid) */
+      imageKind: z.enum(['document', 'photo']).default('document'),
       imageAlt: Lopt,
       photos: z.array(image()).default([]),
       link: z.string().optional(),
@@ -67,6 +73,8 @@ const achievements = defineCollection({
       redact: z.array(Redact).default([]),
       /** optional page-relative crop (0..1) applied by `npm run media` before redaction boxes are painted */
       crop: z.object({ x: z.number(), y: z.number(), w: z.number(), h: z.number() }).optional(),
+      /** clockwise quarter turn applied by `npm run media` after painting and crop (sideways scans) */
+      rotate: z.union([z.literal(0), z.literal(90), z.literal(180), z.literal(270)]).optional(),
     }),
 });
 

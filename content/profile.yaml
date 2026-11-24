@@ -1,22 +1,83 @@
-# Profile shown on the site (RU/EN). FIXTURE values are replaced with real ones.
+# Profile shown on the site (RU/EN). Facts only from documents; see CLAUDE.md for the rules.
 main:
   name: { ru: "Геннадий Козлов", en: "Gennadiy Kozlov" }
+  # typing line in the hero: what he does (verbs), never job titles
   typed:
-    ru: ["строю AI-продукты", "довожу стартапы до финала", "выступаю на конференциях"]
-    en: ["build AI products", "take startups to the final", "speak at conferences"]
-  intro: { ru: "FIXTURE intro", en: "FIXTURE intro" }
+    ru: ["строю AI-продукты", "собираю MVP за 24 часа", "защищаю проекты перед жюри", "выступаю на научных конференциях", "пишу Telegram-ботов"]
+    en: ["build AI products", "ship an MVP in 24 hours", "pitch projects to juries", "speak at research conferences", "write Telegram bots"]
+  intro:
+    ru: "Учусь в Кокшетауском университете имени Абая Мырзахметова, делаю AI-продукты, выхожу с ними на хакатоны и конкурсы стартапов и выступаю на научных конференциях."
+    en: "I study at Abai Myrzakhmetov Kokshetau University, build AI products, take them to hackathons and startup contests, and speak at research conferences."
   about:
-    ru: ["FIXTURE абзац 1", "FIXTURE абзац 2"]
-    en: ["FIXTURE paragraph 1", "FIXTURE paragraph 2"]
+    ru:
+      - "Делаю AI-продукты и довожу их до защиты: сам пишу техзадание и собираю прототип вместе с ИИ-агентами. Так за 24 часа в одиночку появился Overrule на хакатоне Business Cup 2.0, а с командой Enactus Myrzakhmetov — Tamyr, который вышел в финал National Founder Cup 2026. На областном конкурсе AQMOLA POWER 2024 получил III место в направлении IT."
+      - "Учусь на третьем курсе Кокшетауского университета имени Абая Мырзахметова по программе «Безопасность жизнедеятельности и защита окружающей среды», до этого окончил колледж «Арна» по специальности «Защита в чрезвычайных ситуациях». В 2026 году семестр учился по обмену в Universitas Negeri Surabaya в Индонезии."
+      - "Участвую в научных конференциях по пожарной безопасности и охране окружающей среды. В свободное время — баскетбол и бег."
+    en:
+      - "I build AI products and take them all the way to a defence: I write the spec myself and assemble the prototype together with AI coding agents. That is how I built Overrule solo in 24 hours at the Business Cup 2.0 hackathon, and how our Enactus Myrzakhmetov team made Tamyr, which reached the National Founder Cup 2026 final. At the regional AQMOLA POWER 2024 contest I took third place in the IT track."
+      - "I am a third-year student at Abai Myrzakhmetov Kokshetau University in Life Safety and Environmental Protection; before that I graduated from Arna Higher College in emergency protection. In 2026 I spent a semester on exchange at Universitas Negeri Surabaya in Indonesia."
+      - "I take part in research conferences on fire safety and environmental protection. Outside of that — basketball and running."
   location: { ru: "Кокшетау, Казахстан", en: "Kokshetau, Kazakhstan" }
   heroPhotos:
-    - { src: "./media/fixture-portrait.webp", alt: { ru: "Фото", en: "Photo" } }
+    - { src: "./media/hero-talk.webp", alt: { ru: "Геннадий задаёт вопрос с микрофоном в университетском зале", en: "Gennadiy asking a question with a microphone in a university hall" } }
+    - { src: "./media/hero-stage.webp", alt: { ru: "Защита проекта на сцене AQMOLA POWER", en: "Pitching a project on the AQMOLA POWER stage" } }
+    - { src: "./media/hero-finish.webp", alt: { ru: "С медалью финишёра после ночного забега", en: "With a finisher medal after a night run" } }
+  aboutPhoto: { src: "./media/about.webp", alt: { ru: "Портрет Геннадия Козлова", en: "Portrait of Gennadiy Kozlov" } }
   education:
-    - { title: { ru: "FIXTURE", en: "FIXTURE" }, place: { ru: "Кокшетауский университет им. Абая Мырзахметова", en: "Abai Myrzakhmetov Kokshetau University" }, period: "2023 — н.в." }
-  experience: []
+    - title: { ru: "Безопасность жизнедеятельности и защита окружающей среды, бакалавриат", en: "Life Safety and Environmental Protection, BSc" }
+      place: { ru: "Кокшетауский университет им. Абая Мырзахметова", en: "Abai Myrzakhmetov Kokshetau University" }
+      period: "2024 — ..."
+    - title: { ru: "Семестр по обмену, International Credit Transfer (биология)", en: "Exchange semester, International Credit Transfer (Biology)" }
+      place: { ru: "Universitas Negeri Surabaya, Индонезия", en: "Universitas Negeri Surabaya, Indonesia" }
+      period: "2026"
+    - title: { ru: "Защита в чрезвычайных ситуациях", en: "Emergency Protection" }
+      place: { ru: "Кокшетауский высший колледж «Арна»", en: "Arna Higher College, Kokshetau" }
+      period: "— 2024"
+  experience:
+    - org: { ru: "Enactus Myrzakhmetov", en: "Enactus Myrzakhmetov" }
+      role: { ru: "Вице-капитан команды Tamyr", en: "Vice-captain, Tamyr team" }
+      period: "2026"
+      text:
+        ru: "Код, презентация и видео Tamyr для National Founder Cup 2026 — проект вышел в финал в Шымкенте. Продуктовая и AI-часть Qalyp для AI-Sana Startup Challenge."
+        en: "Code, deck and video of Tamyr for the National Founder Cup 2026 — the project reached the final in Shymkent. Product and AI work on Qalyp for the AI-Sana Startup Challenge."
+    - org: { ru: "Собственные проекты", en: "Own projects" }
+      role: { ru: "Telegram-боты и веб-сервисы", en: "Telegram bots and web services" }
+      period: "2025 — 2026"
+      text:
+        ru: "Боты на Python и aiogram 3 (охрана труда, фитостены, приём заявок) и веб-приложения на TypeScript и Next.js — SafeQR, English Practice Hub, Overrule."
+        en: "Bots in Python with aiogram 3 (workplace safety, green walls, lead intake) and web apps in TypeScript and Next.js — SafeQR, English Practice Hub, Overrule."
+    - org: { ru: "Discovery Borovoe, аквапарк курорт-отеля", en: "Discovery Borovoe resort water park" }
+      role: { ru: "Инструктор аквапарка", en: "Water park instructor" }
+      period: "2023 — 2024"
+      text:
+        ru: "Безопасность посетителей на воде и обучение плаванию; благодарственное письмо от администрации."
+        en: "Visitor safety on the water and swimming lessons; a letter of thanks from the management."
   skills:
-    - { group: { ru: "AI", en: "AI" }, items: ["LLM API", "Python"] }
+    - group: { ru: "ИИ в продуктах", en: "AI in products" }
+      items: ["Claude API", "Gemini API", "OpenAI API", "Claude Code", "Prompt engineering", "LLM + правила / rules"]
+      evidence: { ru: "Overrule, Tamyr, Qalyp, NUKS Digital; сертификаты Astana Hub «Prompt Engineering» и AI-SANA.", en: "Overrule, Tamyr, Qalyp, NUKS Digital; Astana Hub “Prompt Engineering” and AI-SANA certificates." }
+    - group: { ru: "Веб-приложения и бэкенд", en: "Web apps and backend" }
+      items: ["TypeScript", "React", "Next.js", "Vite", "Tailwind CSS", "Bun + Hono", "Node.js", "Python + FastAPI", "SQLite", "Supabase", "Docker", "Railway", "Vercel", "GitHub Actions", "Playwright"]
+      evidence: { ru: "Overrule, SafeQR, English Practice Hub, Tamyr, NUKS Digital.", en: "Overrule, SafeQR, English Practice Hub, Tamyr, NUKS Digital." }
+    - group: { ru: "Telegram-боты", en: "Telegram bots" }
+      items: ["Python", "aiogram 3", "SQLite", "Google Sheets API", "Google Calendar API", "pytest"]
+      evidence: { ru: "NUKSupport, SafetyBot, EcoWallBot, бот приёма заявок, бот алертов Tamyr.", en: "NUKSupport, SafetyBot, EcoWallBot, a lead-intake bot, the Tamyr alert bot." }
+    - group: { ru: "Данные и статистика", en: "Data and statistics" }
+      items: ["R / RStudio", "PSPP", "Excel", "pandas", "NumPy", "SciPy", "ANOVA", "Регрессия / Regression", "Elo rating"]
+      evidence: { ru: "Курс биостатистики в UNESA; скоринг в Tamyr и Overrule.", en: "Biostatistics coursework at UNESA; scoring in Tamyr and Overrule." }
+    - group: { ru: "Безопасность и экология", en: "Safety and environment" }
+      items: ["Пожарная безопасность / Fire safety", "Защита в ЧС / Emergency protection", "Радиационная безопасность / Radiation safety", "Охрана труда / Occupational safety", "ESP32 + датчики / sensors"]
+      evidence: { ru: "Колледж «Арна», программа КУ, курсы МООК, доклады по ИИ в обнаружении пожаров и шлему SEZIM.", en: "Arna College, university programme, MOOC courses, talks on AI fire detection and the SEZIM helmet." }
+    - group: { ru: "Питчи и выступления", en: "Pitches and talks" }
+      items: ["Питч-деки / Pitch decks", "Питч 3–5 минут / 3–5 min pitches", "Ответы жюри / Jury Q&A", "Видео-демо / Demo videos", "Научные доклады / Conference talks"]
+      evidence: { ru: "National Founder Cup, Business Cup 2.0, AQMOLA POWER, AI-Sana, конференции.", en: "National Founder Cup, Business Cup 2.0, AQMOLA POWER, AI-Sana, conferences." }
   languages:
-    - { name: { ru: "Английский", en: "English" }, level: { ru: "C1", en: "C1" } }
+    - { name: { ru: "Русский", en: "Russian" }, level: { ru: "родной", en: "native" } }
+    - { name: { ru: "Английский", en: "English" }, level: { ru: "C1 (EF SET)", en: "C1 (EF SET)" } }
+    - { name: { ru: "Казахский", en: "Kazakh" }, level: { ru: "профессиональный", en: "professional" } }
+    - { name: { ru: "Индонезийский", en: "Indonesian" }, level: { ru: "базовый", en: "basic" } }
+  # Only contacts Gennadiy has published before; the rest is waiting for his confirmation.
   contacts:
-    - { kind: github, label: "github.com/gennadiy0041", url: "https://github.com/gennadiy0041" }
+    - { kind: telegram, label: "Telegram · @mnnkgv11", url: "https://t.me/mnnkgv11", primary: true }
+    - { kind: github, label: "GitHub · gennadiy0041", url: "https://github.com/gennadiy0041" }
+  updated: "2026-11-16"

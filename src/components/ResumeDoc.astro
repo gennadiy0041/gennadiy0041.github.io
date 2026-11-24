@@ -1,0 +1,873 @@
+---
+/**
+ * The printable résumé: A4 portrait, light paper, at most two pages with real-size content.
+ * Rendered at /resume/ and /en/resume/; scripts/postbuild.mjs prints it to
+ * /cv/gennadiy-kozlov-<lang>.pdf and then deletes the HTML pages.
+ *
+ * Contract with postbuild: the root carries [data-resume] and data-density="normal". postbuild prints
+ * the CV in a series of layouts until one fits on two pages without a tall gap before a page break:
+ * data-density "normal" → "compact" (smaller type, tighter rhythm) → "tight" (compact type, and the
+ * entries marked data-tight="hide" are dropped from the capped lists — see RESUME_LIMITS in
+ * src/lib/resume.ts), first with every achievement group kept whole under its heading, then with
+ * [data-split], which lets a group continue in the next column.
+ */
+import { getAchievements, getProfile, getProjects, getStats } from '../lib/data';
+import { fmtDate, loc, localizePath, type Lang } from '../i18n';
+import {
+  RESUME_T,
+  achievementLine,
+  capProfileList,
+  contactKind,
+  contactLabel,
+  displayUrl,
+  groupAchievements,
+  localizePeriod,
+  pickStats,
+  projectLine,
+  publicContacts,
+  qrSvg,
+  restNotes,
+  resumeTitle,
+  selectProjects,
+  updatedOn,
+  type RestNote,
+} from '../lib/resume';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = RESUME_T[lang];
+const site = Astro.site!;
+
+const [profile, achievements, projects, stats] = await Promise.all([
+  getProfile(),
+  getAchievements(),
+  getProjects(),
+  getStats(),
+]);
+
+const home = new URL(localizePath('/', lang), site).href;
+const intro = loc(profile.intro, lang);
+const location = loc(profile.location, lang);
+const contacts = publicContacts(profile);
+const numbers = pickStats(stats, lang);
+const shownProjects = selectProjects(projects);
+const projectNotes = restNotes(shownProjects, lang);
+const groups = groupAchievements(achievements, lang).map((g) => ({ ...g, notes: restNotes(g, lang) }));
+const education = capProfileList(profile.education, 'education');
+const experience = capProfileList(profile.experience, 'experience');
+const skills = capProfileList(
+  profile.skills.filter((s) => s.items.length > 0),
+  'skills',
+);
+const { languages } = profile;
+const updated = updatedOn(profile);
+const qr = await qrSvg(home);
+
+/** A "more" line that only the tight layout prints is hidden as a whole by the other layouts. */
+const onlyTight = (notes: RestNote[]) => (notes.every((n) => n.tight === 'show') ? 'show' : undefined);
+/** data-tight of a printed entry: "hide" when the tight layout drops it. */
+const spare = (list: { spare: ReadonlySet<unknown> }, item: unknown) => (list.spare.has(item) ? 'hide' : undefined);
+
+/** Escapes text for a CSS string literal (used for the running footer in the page margin). */
+const cssString = (s: string) => `"${s.replace(/\\/g, '\\\\').replace(/"/g, '\\"').replace(/\n/g, '\\A ')}"`;
+const runningFooter = `@page { @bottom-left { content: ${cssString(resumeTitle(profile, lang))}; } }`;
+
+const hasCareer = education.total + experience.total > 0;
+const hasAbilities = skills.total + languages.length > 0;
+/** "ещё N — на сайте" under the capped profile lists, linking to the site section that lists them all. */
+const profileNotes = {
+  education: restNotes(education, lang),
+  experience: restNotes(experience, lang),
+  skills: restNotes(skills, lang),
+};
+---
+
+<style is:inline set:html={runningFooter}></style>
+<article class="cv" data-resume data-density="normal">
+  <header>
+    <div class="cv-kicker">
+      <span class="cv-label">{t.kicker}</span>
+      <a href={home}>{displayUrl(home)}</a>
+    </div>
+    <div class="cv-id">
+      <div>
+        <h1 class="cv-name">{loc(profile.name, lang)}</h1>
+        {intro && <p class="cv-intro">{intro}</p>}
+      </div>
+      {
+        (location || contacts.length > 0) && (
+          <dl class="cv-contacts">
+            {location && (
+              <div>
+                <dt>{t.location}</dt>
+                <dd>{location}</dd>
+              </div>
+            )}
+            {contacts.map((c) => (
+              <div>
+                <dt>{contactKind(c, lang)}</dt>
+                <dd>
+                  <a href={c.url}>{contactLabel(c, lang)}</a>
+                </dd>
+              </div>
+            ))}
+          </dl>
+        )
+      }
+    </div>
+  </header>
+
+  {
+    numbers.length > 0 && (
+      <ul class="cv-stats">
+        {numbers.map((n) => (
+          <li>
+            <strong>{n.value}</strong> <span>{n.label}</span>
+          </li>
+        ))}
+      </ul>
+    )
+  }
+
+  {
+    shownProjects.items.length > 0 && (
+      <section class="cv-sec" aria-labelledby="cv-projects">
+        <h2 class="cv-h" id="cv-projects">
+          <span class="cv-label">{t.projects}</span>
+          <span class="cv-count">{shownProjects.total}</span>
+        </h2>
+        <ol class="cv-projects">
+          {shownProjects.items.map((project) => {
+            const p = projectLine(project, lang, site);
+            return (
+              <li class="cv-project" data-tight={spare(shownProjects, project)}>
+                <div class="cv-row">
+                  <h3 class="cv-project-name">
+                    <a href={p.href}>{p.name}</a>
+                  </h3>
+                  <span class="cv-when">{p.when}</span>
+                </div>
+                {p.tagline && <p class="cv-tagline">{p.tagline}</p>}
+                {(p.result || p.event) && (
+                  <p class="cv-outcome">
+                    {p.result && <strong>{p.result}</strong>}
+                    {p.event && <span>{p.event}</span>}
+                  </p>
+                )}
+                {p.stack.length > 0 && <p class="cv-stack">{p.stack.join(' · ')}</p>}
+              </li>
+            );
+          })}
+        </ol>
+        {projectNotes.length > 0 && (
+          <p class="cv-more" data-tight={onlyTight(projectNotes)}>
+            <a href={`${home}#projects`}>
+              {projectNotes.map((n) => (
+                <span data-tight={n.tight}>{n.text}</span>
+              ))}
+            </a>
+          </p>
+        )}
+      </section>
+    )
+  }
+
+  {
+    groups.length > 0 && (
+      <section class="cv-sec" aria-labelledby="cv-achievements">
+        <h2 class="cv-h" id="cv-achievements">
+          <span class="cv-label">{t.achievements}</span>
+          <span class="cv-count">{achievements.length}</span>
+        </h2>
+        <div class="cv-groups">
+          {groups.map((g) => (
+            <section class="cv-group" data-group={g.key} aria-labelledby={`cv-g-${g.key}`}>
+              <h3 class="cv-gh" id={`cv-g-${g.key}`}>
+                <span>{g.label}</span>
+                <span class="cv-count">{g.total}</span>
+              </h3>
+              <ol>
+                {g.items.map((a) => {
+                  const l = achievementLine(a, lang);
+                  return (
+                    <li class="cv-ach" data-tight={spare(g, a)}>
+                      <time class="cv-date" datetime={a.data.date}>
+                        {l.date}
+                      </time>
+                      <div>
+                        <p class="cv-ach-title">{l.title}</p>
+                        {(l.result || l.context) && (
+                          <p class="cv-ach-meta">
+                            {l.result && <strong>{l.result}</strong>}
+                            {l.context && <span>{l.context}</span>}
+                          </p>
+                        )}
+                      </div>
+                    </li>
+                  );
+                })}
+              </ol>
+              {g.notes.length > 0 && (
+                <p class="cv-more" data-tight={onlyTight(g.notes)}>
+                  <a href={`${home}#achievements`}>
+                    {g.notes.map((n) => (
+                      <span data-tight={n.tight}>{n.text}</span>
+                    ))}
+                  </a>
+                </p>
+              )}
+            </section>
+          ))}
+        </div>
+      </section>
+    )
+  }
+
+  {
+    (hasCareer || hasAbilities) && (
+      <div class="cv-cols">
+        {hasCareer && (
+          <div>
+            {education.items.length > 0 && (
+              <section class="cv-sec" aria-labelledby="cv-education">
+                <h2 class="cv-h" id="cv-education">
+                  <span class="cv-label">{t.education}</span>
+                </h2>
+                <ul>
+                  {education.items.map((e) => (
+                    <li class="cv-entry" data-tight={spare(education, e)}>
+                      <div class="cv-row">
+                        <h3 class="cv-entry-title">{loc(e.title, lang)}</h3>
+                        <span class="cv-when">{localizePeriod(e.period, lang)}</span>
+                      </div>
+                      <p class="cv-entry-sub">{loc(e.place, lang)}</p>
+                    </li>
+                  ))}
+                </ul>
+                {profileNotes.education.length > 0 && (
+                  <p class="cv-more" data-tight={onlyTight(profileNotes.education)}>
+                    <a href={`${home}#about`}>
+                      {profileNotes.education.map((n) => (
+                        <span data-tight={n.tight}>{n.text}</span>
+                      ))}
+                    </a>
+                  </p>
+                )}
+              </section>
+            )}
+            {experience.items.length > 0 && (
+              <section class="cv-sec" aria-labelledby="cv-experience">
+                <h2 class="cv-h" id="cv-experience">
+                  <span class="cv-label">{t.experience}</span>
+                </h2>
+                <ul>
+                  {experience.items.map((x) => {
+                    const text = loc(x.text, lang);
+                    return (
+                      <li class="cv-entry" data-tight={spare(experience, x)}>
+                        <div class="cv-row">
+                          <h3 class="cv-entry-title">{loc(x.role, lang)}</h3>
+                          <span class="cv-when">{localizePeriod(x.period, lang)}</span>
+                        </div>
+                        <p class="cv-entry-sub">{loc(x.org, lang)}</p>
+                        {text && <p class="cv-entry-text">{text}</p>}
+                      </li>
+                    );
+                  })}
+                </ul>
+                {profileNotes.experience.length > 0 && (
+                  <p class="cv-more" data-tight={onlyTight(profileNotes.experience)}>
+                    <a href={`${home}#about`}>
+                      {profileNotes.experience.map((n) => (
+                        <span data-tight={n.tight}>{n.text}</span>
+                      ))}
+                    </a>
+                  </p>
+                )}
+              </section>
+            )}
+          </div>
+        )}
+        {hasAbilities && (
+          <div>
+            {skills.items.length > 0 && (
+              <section class="cv-sec" aria-labelledby="cv-skills">
+                <h2 class="cv-h" id="cv-skills">
+                  <span class="cv-label">{t.skills}</span>
+                </h2>
+                <dl class="cv-skills">
+                  {skills.items.map((s) => (
+                    <div data-tight={spare(skills, s)}>
+                      <dt>{loc(s.group, lang)}</dt>
+                      <dd>{s.items.join(' · ')}</dd>
+                    </div>
+                  ))}
+                </dl>
+                {profileNotes.skills.length > 0 && (
+                  <p class="cv-more" data-tight={onlyTight(profileNotes.skills)}>
+                    <a href={`${home}#skills`}>
+                      {profileNotes.skills.map((n) => (
+                        <span data-tight={n.tight}>{n.text}</span>
+                      ))}
+                    </a>
+                  </p>
+                )}
+              </section>
+            )}
+            {languages.length > 0 && (
+              <section class="cv-sec" aria-labelledby="cv-languages">
+                <h2 class="cv-h" id="cv-languages">
+                  <span class="cv-label">{t.languages}</span>
+                </h2>
+                <dl class="cv-langs">
+                  {languages.map((l) => (
+                    <div>
+                      <dt>{loc(l.name, lang)}</dt>
+                      <dd>{loc(l.level, lang)}</dd>
+                    </div>
+                  ))}
+                </dl>
+              </section>
+            )}
+          </div>
+        )}
+      </div>
+    )
+  }
+
+  <footer class="cv-foot">
+    <div class="cv-qr" role="img" aria-label={`${t.qr}: ${home}`} set:html={qr} />
+    <div>
+      <a class="cv-url" href={home}>{displayUrl(home)}</a>
+      <p class="cv-online">{t.online}</p>
+    </div>
+    <p class="cv-updated">
+      {t.updated}
+      <time datetime={updated}>{fmtDate(updated, lang)}</time>
+    </p>
+  </footer>
+</article>
+
+<style is:global>
+  /* ------------------------------------------------------------ paper */
+  @page {
+    size: A4;
+    margin: 14mm 14mm 16mm;
+
+    @bottom-left {
+      font-family: var(--font-code), ui-monospace, monospace;
+      font-size: 6.3pt;
+      letter-spacing: 0.04em;
+      color: #8a9097;
+    }
+    @bottom-right {
+      content: counter(page) ' / ' counter(pages);
+      font-family: var(--font-code), ui-monospace, monospace;
+      font-size: 6.3pt;
+      letter-spacing: 0.04em;
+      color: #8a9097;
+    }
+  }
+
+  html {
+    background: #fff;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+  body {
+    margin: 0;
+  }
+
+  /* On screen (dev only) the page is previewed as a sheet of paper. */
+  @media screen {
+    html {
+      background: #dcdfe4;
+    }
+    body {
+      padding: 12mm 0;
+    }
+    .cv {
+      width: 210mm;
+      min-height: 297mm;
+      margin: 0 auto;
+      padding: 14mm 14mm 16mm;
+      background: #fff;
+      box-shadow:
+        0 1px 2px rgb(0 0 0 / 0.06),
+        0 18px 50px -20px rgb(0 0 0 / 0.35);
+    }
+  }
+
+  /* ------------------------------------------------------------ tokens */
+  .cv {
+    --ink: #0b0c0e;
+    --ink-2: #3f454c;
+    --ink-3: #747a82;
+    --hair: #d9dce1;
+    --hair-2: #e9ebee;
+    /* the site's lime, darkened for paper — small marks only */
+    --mark: #4d6b00;
+
+    --fs-name: 30pt;
+    --fs-intro: 10.4pt;
+    --fs-num: 19pt;
+    --fs-title: 10pt;
+    --fs-body: 8.8pt;
+    --fs-small: 7.9pt;
+    --fs-mono: 6.7pt;
+    --gap: 8mm;
+    --sec: 7.5mm;
+    --item: 2.6mm;
+    --row: 1.55mm;
+
+    box-sizing: border-box;
+    font-family: var(--font-body), system-ui, sans-serif;
+    font-size: var(--fs-body);
+    line-height: 1.38;
+    color: var(--ink);
+    font-kerning: normal;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+  }
+  .cv:is([data-density='compact'], [data-density='tight']) {
+    --fs-name: 27pt;
+    --fs-intro: 9.6pt;
+    --fs-num: 17pt;
+    --fs-title: 9.4pt;
+    --fs-body: 8.3pt;
+    --fs-small: 7.5pt;
+    --fs-mono: 6.4pt;
+    --sec: 5.4mm;
+    --item: 1.9mm;
+    --row: 1.15mm;
+  }
+  /* tight layout: drop the spare entries and swap in its own "ещё N" counts */
+  .cv[data-density='tight'] [data-tight='hide'],
+  .cv:not([data-density='tight']) [data-tight='show'] {
+    display: none;
+  }
+
+  .cv *,
+  .cv *::before,
+  .cv *::after {
+    box-sizing: border-box;
+  }
+  .cv :where(h1, h2, h3, p, ol, ul, dl, dd) {
+    margin: 0;
+    padding: 0;
+  }
+  .cv :where(ol, ul) {
+    list-style: none;
+  }
+  .cv :where(h1, h2, h3) {
+    font-size: inherit;
+    font-weight: inherit;
+    text-wrap: balance;
+  }
+  .cv a {
+    color: inherit;
+    text-decoration: none;
+  }
+  .cv p {
+    text-wrap: pretty;
+  }
+
+  /* small mono caps label with the accent square: "▪ ПРОЕКТЫ" */
+  .cv-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 2mm;
+  }
+  .cv-label::before {
+    content: '';
+    flex: none;
+    width: 1.5mm;
+    height: 1.5mm;
+    background: var(--mark);
+  }
+
+  /* ------------------------------------------------------------ header */
+  .cv-kicker {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 6mm;
+    font-family: var(--font-code), ui-monospace, monospace;
+    font-size: var(--fs-mono);
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+  }
+  .cv-kicker .cv-label {
+    color: var(--ink);
+  }
+  .cv-kicker a {
+    letter-spacing: 0.02em;
+    text-transform: none;
+  }
+  /* name and intro on the left, the contact sheet on the right, bottoms aligned */
+  .cv-id {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: end;
+    column-gap: var(--gap);
+    margin-top: 7mm;
+  }
+  .cv-name {
+    font-family: var(--font-display), sans-serif;
+    font-weight: 600;
+    font-size: var(--fs-name);
+    line-height: 1;
+    letter-spacing: -0.035em;
+  }
+  .cv-intro {
+    max-width: 118mm;
+    margin-top: 3.4mm;
+    font-size: var(--fs-intro);
+    line-height: 1.4;
+    color: var(--ink-2);
+  }
+  .cv-contacts {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    align-items: baseline;
+    gap: 1.25mm 3.2mm;
+    max-width: 72mm;
+    padding-left: 4.2mm;
+    border-left: 0.5pt solid var(--hair);
+    font-size: var(--fs-small);
+    line-height: 1.3;
+  }
+  .cv-contacts > div {
+    display: contents;
+  }
+  .cv-contacts dt {
+    font-family: var(--font-code), ui-monospace, monospace;
+    font-size: var(--fs-mono);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+  }
+  .cv-contacts dd {
+    overflow-wrap: anywhere;
+  }
+
+  /* ------------------------------------------------------------ key numbers */
+  .cv-stats {
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: minmax(0, 1fr);
+    margin-top: 6.5mm;
+    border-top: 0.9pt solid var(--ink);
+    border-bottom: 0.5pt solid var(--hair);
+    break-inside: avoid;
+  }
+  .cv-stats li {
+    display: flex;
+    flex-direction: column;
+    gap: 1.4mm;
+    padding: 3.6mm 4mm 3.4mm;
+  }
+  .cv-stats li:first-child {
+    padding-left: 0;
+  }
+  .cv-stats li + li {
+    border-left: 0.5pt solid var(--hair);
+  }
+  .cv-stats strong {
+    font-family: var(--font-display), sans-serif;
+    font-weight: 500;
+    font-size: var(--fs-num);
+    line-height: 1;
+    letter-spacing: -0.03em;
+    font-variant-numeric: tabular-nums;
+  }
+  .cv-stats span {
+    font-size: var(--fs-small);
+    line-height: 1.25;
+    color: var(--ink-3);
+  }
+
+  /* ------------------------------------------------------------ sections */
+  .cv-sec {
+    margin-top: var(--sec);
+  }
+  .cv-h {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 4mm;
+    padding-bottom: 1.9mm;
+    border-bottom: 0.9pt solid var(--ink);
+    font-family: var(--font-code), ui-monospace, monospace;
+    font-size: var(--fs-mono);
+    font-weight: 500;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    break-after: avoid;
+  }
+  .cv-count {
+    font-family: var(--font-code), ui-monospace, monospace;
+    font-size: var(--fs-mono);
+    font-weight: 400;
+    letter-spacing: 0.04em;
+    color: var(--ink-3);
+    font-variant-numeric: tabular-nums;
+  }
+  .cv-row {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 3mm;
+  }
+  .cv-when {
+    flex: none;
+    font-family: var(--font-code), ui-monospace, monospace;
+    font-size: var(--fs-mono);
+    letter-spacing: 0.02em;
+    color: var(--ink-3);
+    font-variant-numeric: tabular-nums;
+  }
+  .cv-more {
+    padding-top: 1.6mm;
+    font-family: var(--font-code), ui-monospace, monospace;
+    font-size: var(--fs-mono);
+    letter-spacing: 0.04em;
+    color: var(--ink-3);
+    break-before: avoid;
+  }
+  .cv-more a {
+    border-bottom: 0.5pt solid var(--hair);
+  }
+
+  /* ------------------------------------------------------------ projects */
+  .cv-projects {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    column-gap: var(--gap);
+  }
+  .cv-project {
+    padding-block: var(--item);
+    break-inside: avoid;
+  }
+  /* rows after the first get a hairline (spare entries come last, so hiding them keeps this right) */
+  .cv-project:nth-child(n + 3) {
+    border-top: 0.5pt solid var(--hair);
+  }
+  .cv-project-name {
+    font-family: var(--font-display), sans-serif;
+    font-weight: 600;
+    font-size: var(--fs-title);
+    line-height: 1.2;
+    letter-spacing: -0.02em;
+  }
+  .cv-tagline {
+    margin-top: 0.9mm;
+    color: var(--ink-2);
+  }
+  .cv-outcome {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0.6mm 2.6mm;
+    margin-top: 1.4mm;
+    font-size: var(--fs-small);
+    color: var(--ink-3);
+  }
+  .cv-outcome strong,
+  .cv-group[data-group='wins'] .cv-ach-meta strong {
+    display: inline-flex;
+    align-items: center;
+    gap: 1.3mm;
+    font-weight: 600;
+    color: var(--ink);
+  }
+  .cv-outcome strong::before,
+  .cv-group[data-group='wins'] .cv-ach-meta strong::before {
+    content: '';
+    flex: none;
+    width: 1.3mm;
+    height: 1.3mm;
+    background: var(--mark);
+  }
+  .cv-stack {
+    margin-top: 1.4mm;
+    font-family: var(--font-code), ui-monospace, monospace;
+    font-size: var(--fs-mono);
+    letter-spacing: 0.02em;
+    color: var(--ink-3);
+  }
+
+  /* ------------------------------------------------------------ achievements */
+  .cv-groups {
+    column-count: 2;
+    column-gap: var(--gap);
+  }
+  /* each group stays whole under its heading; only the last-resort [data-split] layout lets a group
+     continue in the next column, and then avoids a lone entry on either side of the break (the
+     :not() guards keep a one-entry group from passing "avoid" on to the gap between groups, which
+     would stop the columns from balancing) */
+  .cv-group {
+    break-inside: avoid;
+  }
+  .cv[data-split] .cv-group {
+    break-inside: auto;
+  }
+  .cv[data-split] .cv-group li:first-child:not(:last-child) {
+    break-after: avoid;
+  }
+  .cv[data-split] .cv-group li:last-child:not(:first-child) {
+    break-before: avoid;
+  }
+  .cv-group + .cv-group {
+    margin-top: 3.4mm;
+  }
+  .cv-gh {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 3mm;
+    padding: 2.4mm 0 1.3mm;
+    border-bottom: 0.5pt solid var(--hair);
+    font-size: var(--fs-small);
+    font-weight: 600;
+    letter-spacing: 0.01em;
+    break-after: avoid;
+    break-inside: avoid;
+  }
+  .cv-ach {
+    display: grid;
+    grid-template-columns: 12.5mm minmax(0, 1fr);
+    column-gap: 1.6mm;
+    padding-block: var(--row);
+    border-bottom: 0.5pt solid var(--hair-2);
+    break-inside: avoid;
+  }
+  .cv-date {
+    padding-top: 0.45mm;
+    font-family: var(--font-code), ui-monospace, monospace;
+    font-size: var(--fs-mono);
+    color: var(--ink-3);
+    font-variant-numeric: tabular-nums;
+  }
+  .cv-ach-title {
+    font-weight: 500;
+    line-height: 1.3;
+  }
+  .cv-ach-meta {
+    margin-top: 0.4mm;
+    font-size: var(--fs-small);
+    line-height: 1.3;
+    color: var(--ink-3);
+  }
+  .cv-ach-meta strong {
+    font-weight: 600;
+    color: var(--ink-2);
+  }
+  .cv-ach-meta strong + span::before {
+    content: ' · ';
+  }
+
+  /* ------------------------------------------------------------ education · experience · skills · languages */
+  .cv-cols {
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: minmax(0, 1fr);
+    column-gap: var(--gap);
+  }
+  .cv-entry {
+    padding-block: var(--item);
+    break-inside: avoid;
+  }
+  .cv-entry + .cv-entry {
+    border-top: 0.5pt solid var(--hair);
+  }
+  .cv-entry-title {
+    font-weight: 600;
+    line-height: 1.3;
+  }
+  .cv-entry-sub,
+  .cv-entry-text {
+    margin-top: 0.6mm;
+    font-size: var(--fs-small);
+    color: var(--ink-2);
+  }
+  .cv-skills > div,
+  .cv-langs > div {
+    padding-block: var(--row) calc(var(--row) + 0.2mm);
+    break-inside: avoid;
+  }
+  .cv-skills > div + div,
+  .cv-langs > div + div {
+    border-top: 0.5pt solid var(--hair-2);
+  }
+  .cv-skills dt {
+    font-family: var(--font-code), ui-monospace, monospace;
+    font-size: var(--fs-mono);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+  }
+  .cv-skills dd {
+    margin-top: 0.6mm;
+  }
+  .cv-langs > div {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 4mm;
+  }
+  .cv-langs dd {
+    font-family: var(--font-code), ui-monospace, monospace;
+    font-size: var(--fs-mono);
+    letter-spacing: 0.04em;
+    color: var(--ink-2);
+  }
+
+  /* ------------------------------------------------------------ footer */
+  .cv-foot {
+    display: grid;
+    grid-template-columns: 18mm minmax(0, 1fr) auto;
+    align-items: center;
+    column-gap: 5mm;
+    margin-top: calc(var(--sec) + 1mm);
+    padding-top: 4mm;
+    border-top: 0.9pt solid var(--ink);
+    break-inside: avoid;
+  }
+  .cv-qr svg {
+    display: block;
+    width: 18mm;
+    height: 18mm;
+  }
+  .cv-url {
+    font-family: var(--font-display), sans-serif;
+    font-weight: 600;
+    font-size: var(--fs-title);
+    letter-spacing: -0.02em;
+  }
+  .cv-online {
+    margin-top: 1.1mm;
+    font-size: var(--fs-small);
+    color: var(--ink-2);
+  }
+  .cv-updated {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 0.8mm;
+    font-family: var(--font-code), ui-monospace, monospace;
+    font-size: var(--fs-mono);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+  }
+  .cv-updated time {
+    letter-spacing: 0.02em;
+    text-transform: none;
+    color: var(--ink-2);
+  }
+</style>

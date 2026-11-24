@@ -1,0 +1,127 @@
+---
+import { Picture } from 'astro:assets';
+import SectionHead from '../SectionHead.astro';
+import { getProfile } from '../../lib/data';
+import { loc, useT, type Lang } from '../../i18n';
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const t = useT(lang);
+const p = await getProfile();
+const photo = p.aboutPhoto;
+---
+
+<section id="about" class="relative py-24 md:py-32" data-section data-section-label={t('nav.about')} aria-labelledby="about-title">
+  <div class="container-x">
+    <SectionHead index="06" eyebrow={t('about.eyebrow')} title={t('about.title')} id="about-title" />
+    <div class="grid gap-12 lg:grid-cols-[minmax(0,0.85fr)_minmax(0,1.15fr)] lg:gap-16">
+      <div class="lg:sticky lg:top-[calc(var(--nav-h)+2rem)] lg:self-start">
+        {
+          photo && (
+            <figure class="about-photo" data-tilt data-reveal>
+              <Picture src={photo.src} formats={['avif', 'webp']} widths={[420, 640, 900]} sizes="(min-width: 1024px) 34vw, 92vw" alt={loc(photo.alt, lang)} class="h-full w-full object-cover" loading="lazy" />
+              <span class="about-photo-glow" aria-hidden="true" />
+            </figure>
+          )
+        }
+      </div>
+      <div>
+        <div class="space-y-5 text-[1.08rem] leading-[1.75] text-[var(--text-dim)]">
+          {p.about[lang].map((para, i) => <p data-reveal style={`--d:${i * 0.06}s`} class:list={[i === 0 && 'text-[1.22rem] text-[var(--text)]']}>{para}</p>)}
+        </div>
+
+        <div class="mt-14 grid gap-10 md:grid-cols-2">
+          {
+            p.education.length > 0 && (
+              <div data-reveal>
+                <h3 class="eyebrow mb-5">{t('about.education')}</h3>
+                <ul class="space-y-5">
+                  {p.education.map((e) => (
+                    <li class="about-row">
+                      <span class="font-mono text-[0.72rem] text-[var(--text-mute)]">{e.period}</span>
+                      <span class="font-semibold text-[var(--text)]">{loc(e.title, lang)}</span>
+                      <span class="text-[0.9rem] text-[var(--text-dim)]">{loc(e.place, lang)}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )
+          }
+          {
+            p.languages.length > 0 && (
+              <div data-reveal style="--d:.08s">
+                <h3 class="eyebrow mb-5">{t('about.languages')}</h3>
+                <ul class="space-y-3">
+                  {p.languages.map((l) => (
+                    <li class="flex items-baseline justify-between gap-4 border-b border-[var(--line)] pb-3">
+                      <span class="text-[var(--text)]">{loc(l.name, lang)}</span>
+                      <span class="font-mono text-[0.78rem] text-[var(--accent)]">{loc(l.level, lang)}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )
+          }
+        </div>
+
+        {
+          p.experience.length > 0 && (
+            <div class="mt-14" data-reveal>
+              <h3 class="eyebrow mb-5">{t('about.experience')}</h3>
+              <ol class="space-y-0" role="list">
+                {p.experience.map((x) => (
+                  <li class="exp-row">
+                    <span class="font-mono text-[0.72rem] text-[var(--text-mute)]">{x.period}</span>
+                    <div>
+                      <p class="font-semibold text-[var(--text)]">
+                        {loc(x.role, lang)} <span class="font-normal text-[var(--text-dim)]">· {loc(x.org, lang)}</span>
+                      </p>
+                      {loc(x.text, lang) && <p class="mt-1.5 text-[0.92rem] leading-relaxed text-[var(--text-dim)]">{loc(x.text, lang)}</p>}
+                    </div>
+                  </li>
+                ))}
+              </ol>
+            </div>
+          )
+        }
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .about-photo {
+    position: relative;
+    aspect-ratio: 4 / 5;
+    overflow: hidden;
+    border-radius: 1.5rem;
+    border: 1px solid var(--line-2);
+    background: var(--surface);
+  }
+  .about-photo-glow {
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(120% 60% at 50% 120%, color-mix(in oklab, var(--glow) 45%, transparent), transparent 60%),
+      linear-gradient(160deg, rgb(255 255 255 / 0.12), transparent 30%);
+    mix-blend-mode: screen;
+    pointer-events: none;
+  }
+  .about-row {
+    display: grid;
+    gap: 0.3rem;
+  }
+  .exp-row {
+    display: grid;
+    gap: 0.4rem 1.5rem;
+    padding-block: 1rem;
+    border-bottom: 1px solid var(--line);
+  }
+  @media (min-width: 640px) {
+    .exp-row {
+      grid-template-columns: 9rem minmax(0, 1fr);
+    }
+  }
+</style>

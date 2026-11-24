@@ -20,7 +20,7 @@ const links = [
 ];
 ---
 
-<header class="site-nav" data-nav transition:persist="site-nav" transition:persist-props>
+<header class="site-nav" data-nav>
   <div class="container-x flex h-[var(--nav-h)] items-center gap-4">
     <a href={home} class="group flex items-center gap-3" aria-label={lang === 'ru' ? 'Геннадий Козлов — на главную' : 'Gennadiy Kozlov — home'}>
       <span class="logo-mark" aria-hidden="true">
@@ -46,12 +46,14 @@ const links = [
     </nav>
 
     <div class="ml-auto flex items-center gap-2 lg:ml-4">
-      <button type="button" class="nav-icon-btn" data-palette-open aria-label={t('nav.search')} aria-keyshortcuts="Control+K Meta+K">
+      <button type="button" class="nav-icon-btn" data-palette-open aria-keyshortcuts="Control+K Meta+K">
+        <span class="sr-only">{t('nav.search')}</span>
         <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><circle cx="11" cy="11" r="6.5" fill="none" stroke="currentColor" stroke-width="1.8"></circle><path d="m16 16 4.5 4.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"></path></svg>
-        <span class="hidden items-center gap-1 xl:inline-flex"><span class="kbd" data-mod-key>Ctrl</span><span class="kbd">K</span></span>
+        <span class="hidden items-center gap-1 xl:inline-flex" aria-hidden="true"><span class="kbd" data-mod-key>Ctrl</span><span class="kbd">K</span></span>
       </button>
-      <a href={otherHref} class="nav-lang" hreflang={other} lang={other} aria-label={t('lang.switch')} data-astro-reload={false}>
-        <span class:list={[lang === 'ru' && 'is-on']}>RU</span><span class="opacity-30">/</span><span class:list={[lang === 'en' && 'is-on']}>EN</span>
+      <a href={otherHref} class="nav-lang" hreflang={other} lang={other}>
+        <span class="sr-only">{t('lang.switch')}</span>
+        <span aria-hidden="true" class:list={[lang === 'ru' && 'is-on']}>RU</span><span aria-hidden="true" class="opacity-30">/</span><span aria-hidden="true" class:list={[lang === 'en' && 'is-on']}>EN</span>
       </a>
       <a href={cv} class="btn btn-primary hidden !h-10 !px-4 !text-[0.85rem] sm:inline-flex" download data-cv-link>
         <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path d="M12 4v11m0 0 4.5-4.5M12 15l-4.5-4.5M5 19.5h14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg>
@@ -164,6 +166,11 @@ const links = [
       color 0.25s,
       border-color 0.25s,
       background-color 0.25s;
+  }
+  @media (min-width: 1024px) {
+    [data-menu-open] {
+      display: none;
+    }
   }
   .nav-icon-btn:hover {
     color: var(--text);

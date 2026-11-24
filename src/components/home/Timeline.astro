@@ -1,0 +1,354 @@
+---
+import { getImage } from 'astro:assets';
+import SectionHead from '../SectionHead.astro';
+import { getAchievements, groupOf, achievementAnchor } from '../../lib/data';
+import { GROUP_LABEL, LEVEL_LABEL, GROUPS, fmtAchDate, loc, useT, yearOf, type Lang } from '../../i18n';
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const t = useT(lang);
+const all = await getAchievements();
+
+const items = await Promise.all(
+  all.map(async (a) => {
+    let doc: { src: string; srcset: string; thumb: string; w: number; h: number } | null = null;
+    if (a.data.image) {
+      const [big, mid, thumb] = await Promise.all([
+        getImage({ src: a.data.image, width: 1800, format: 'webp' }),
+        getImage({ src: a.data.image, width: 1000, format: 'webp' }),
+        getImage({ src: a.data.image, width: 120, height: 120, fit: 'cover', position: 'top', format: 'webp' }),
+      ]);
+      doc = { src: big.src, srcset: `${mid.src} 1000w, ${big.src} 1800w`, thumb: thumb.src, w: a.data.image.width, h: a.data.image.height };
+    }
+    return { a, group: groupOf(a), year: yearOf(a.data.date), doc };
+  }),
+);
+const years = [...new Set(items.map((i) => i.year))].sort((x, y) => y - x);
+const groups = GROUPS.filter((g) => items.some((i) => i.group === g));
+const hasPodium = items.some((i) => i.a.data.podium);
+const byYear = years.map((y) => ({ y, list: items.filter((i) => i.year === y) }));
+---
+
+<section id="achievements" class="relative py-24 md:py-32" data-section data-section-label={t('nav.achievements')} aria-labelledby="achievements-title">
+  <div class="container-x">
+    <SectionHead index="03" eyebrow={t('timeline.eyebrow')} title={t('timeline.title')} lead={t('timeline.lead')} id="achievements-title" />
+
+    <div class="tl-filters" data-tl-filters data-reveal role="group" aria-label={lang === 'ru' ? 'Фильтры' : 'Filters'}>
+      <div class="tl-filter-row">
+        <span class="eyebrow w-14 shrink-0">{t('timeline.filter.year')}</span>
+        <div class="flex flex-wrap gap-1.5">
+          <button type="button" class="tl-chip" data-f-year="all" aria-pressed="true">{t('timeline.filter.all')}</button>
+          {years.map((y) => <button type="button" class="tl-chip" data-f-year={y} aria-pressed="false">{y}</button>)}
+        </div>
+      </div>
+      <div class="tl-filter-row">
+        <span class="eyebrow w-14 shrink-0">{t('timeline.filter.type')}</span>
+        <div class="flex flex-wrap gap-1.5">
+          <button type="button" class="tl-chip" data-f-group="all" aria-pressed="true">{t('timeline.filter.all')}</button>
+          {groups.map((g) => <button type="button" class="tl-chip" data-f-group={g} aria-pressed="false">{loc(GROUP_LABEL[g], lang)}</button>)}
+          {
+            hasPodium && (
+              <button type="button" class="tl-chip tl-chip-podium" data-f-podium aria-pressed="false">
+                <span class="podium-star" aria-hidden="true">✦</span>
+                {t('timeline.filter.wins')}
+              </button>
+            )
+          }
+        </div>
+      </div>
+      <p class="font-mono text-[0.72rem] text-[var(--text-mute)]" aria-live="polite">
+        <span data-tl-count>{items.length}</span> / {items.length} · {t('timeline.count')}
+      </p>
+    </div>
+
+    <div class="tl" data-tl>
+      <div class="tl-line" aria-hidden="true"><div class="tl-line-fill" data-tl-fill></div></div>
+      {
+        byYear.map(({ y, list }) => (
+          <div class="tl-year-block" data-tl-year={y}>
+            <h3 class="tl-year">
+              <span>{y}</span>
+            </h3>
+            <ol class="tl-list" role="list">
+              {list.map(({ a, group, doc }) => {
+                const result = loc(a.data.result, lang);
+                const meta = [loc(a.data.issuer, lang), loc(LEVEL_LABEL[a.data.level], lang)].filter(Boolean).join(' · ');
+                return (
+                  <li id={achievementAnchor(a)} class="tl-item" data-group={group} data-year={y} data-podium={a.data.podium ? '1' : '0'} data-reveal>
+                    <span class:list={['tl-dot', a.data.podium && 'is-podium']} aria-hidden="true" />
+                    <div class="tl-date">{fmtAchDate(a.data.date, a.data.dateApprox, lang)}</div>
+                    <div class="tl-main">
+                      <h4 class="tl-title">{loc(a.data.title, lang)}</h4>
+                      {meta && <p class="tl-meta">{meta}</p>}
+                      {loc(a.data.description, lang) && <p class="tl-desc">{loc(a.data.description, lang)}</p>}
+                    </div>
+                    <div class="tl-side">
+                      {result && <span class:list={['chip', a.data.podium && 'chip-accent']}>{result}</span>}
+                      {doc && (
+                        <button
+                          type="button"
+                          class="tl-doc"
+                          data-lb
+                          data-lb-group="achievements"
+                          data-lb-id={a.id}
+                          data-lb-src={doc.src}
+                          data-lb-srcset={doc.srcset}
+                          data-lb-w={doc.w}
+                          data-lb-h={doc.h}
+                          data-lb-caption={loc(a.data.title, lang)}
+                          data-lb-sub={[fmtAchDate(a.data.date, a.data.dateApprox, lang), loc(a.data.issuer, lang)].filter(Boolean).join(' · ')}
+                          aria-label={`${a.data.imageKind === 'photo' ? t('timeline.photo') : t('timeline.doc')}: ${loc(a.data.title, lang)}`}
+                        >
+                          <img src={doc.thumb} alt="" width="40" height="40" loading="lazy" decoding="async" />
+                          <span>{a.data.imageKind === 'photo' ? t('timeline.photo') : t('timeline.doc')}</span>
+                        </button>
+                      )}
+                    </div>
+                  </li>
+                );
+              })}
+            </ol>
+          </div>
+        ))
+      }
+      <p class="tl-empty" data-tl-empty hidden>{t('timeline.empty')}</p>
+    </div>
+  </div>
+</section>
+
+<style>
+  .tl-filters {
+    display: grid;
+    gap: 0.9rem;
+    margin-bottom: 3rem;
+    padding: 1.1rem 1.2rem;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: rgb(255 255 255 / 0.015);
+  }
+  .tl-filter-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+  .tl-filter-row .eyebrow {
+    padding-top: 0.6rem;
+  }
+  .tl-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    height: 2rem;
+    padding-inline: 0.85rem;
+    border-radius: 999px;
+    border: 1px solid var(--line);
+    font-size: 0.82rem;
+    color: var(--text-dim);
+    transition:
+      color 0.25s,
+      border-color 0.25s,
+      background-color 0.25s;
+  }
+  .tl-chip:hover {
+    color: var(--text);
+    border-color: var(--line-2);
+  }
+  .tl-chip[aria-pressed='true'] {
+    color: var(--accent-ink);
+    background: var(--accent);
+    border-color: var(--accent);
+  }
+  .tl-chip-podium[aria-pressed='false'] .podium-star {
+    color: var(--accent);
+  }
+  .tl {
+    position: relative;
+    padding-left: 1.6rem;
+  }
+  @media (min-width: 768px) {
+    .tl {
+      padding-left: 0;
+    }
+  }
+  .tl-line {
+    position: absolute;
+    top: 0.5rem;
+    bottom: 0;
+    left: 0.35rem;
+    width: 1px;
+    background: var(--line);
+  }
+  @media (min-width: 768px) {
+    .tl-line {
+      left: 9.6rem;
+    }
+  }
+  .tl-line-fill {
+    position: absolute;
+    inset: 0;
+    transform-origin: top;
+    background: linear-gradient(to bottom, var(--accent), color-mix(in oklab, var(--glow) 80%, transparent));
+    box-shadow: 0 0 12px color-mix(in oklab, var(--accent) 60%, transparent);
+  }
+  :global(html.rich) .tl-line-fill {
+    transform: scaleY(0);
+  }
+  .tl-year-block {
+    position: relative;
+    display: flow-root;
+    padding-bottom: 2.5rem;
+  }
+  .tl-year-block[hidden] {
+    display: none;
+  }
+  .tl-year {
+    position: relative;
+    margin: 0 0 1rem;
+    padding-top: 0.5rem;
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: clamp(2.1rem, 3.2vw, 2.6rem);
+    letter-spacing: -0.05em;
+    line-height: 1;
+    color: rgb(255 255 255 / 0.16);
+  }
+  @media (min-width: 768px) {
+    .tl-year {
+      position: sticky;
+      top: calc(var(--nav-h) + 1.2rem);
+      float: left;
+      width: 8.4rem;
+      margin: 0;
+      text-align: right;
+    }
+  }
+  .tl-list {
+    display: grid;
+    gap: 0.75rem;
+  }
+  @media (min-width: 768px) {
+    .tl-list {
+      margin-left: 11.2rem;
+    }
+  }
+  .tl-item {
+    position: relative;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0.5rem 1.4rem;
+    padding: 1.1rem 1.2rem;
+    border: 1px solid var(--line);
+    border-radius: 1rem;
+    background: rgb(255 255 255 / 0.018);
+    transition:
+      border-color 0.3s,
+      background-color 0.3s,
+      box-shadow 0.4s;
+    scroll-margin-top: calc(var(--nav-h) + 2rem);
+  }
+  .tl-item[hidden] {
+    display: none;
+  }
+  .tl-item:hover {
+    border-color: var(--line-2);
+    background: rgb(255 255 255 / 0.03);
+  }
+  .tl-item:global(.is-flash) {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 4px color-mix(in oklab, var(--accent) 18%, transparent);
+  }
+  @media (min-width: 1000px) {
+    .tl-item {
+      grid-template-columns: 8rem minmax(0, 1fr) auto;
+      align-items: start;
+    }
+  }
+  .tl-dot {
+    position: absolute;
+    left: -1.62rem;
+    top: 1.45rem;
+    width: 0.7rem;
+    height: 0.7rem;
+    border-radius: 99px;
+    border: 1px solid var(--line-2);
+    background: var(--bg);
+  }
+  @media (min-width: 768px) {
+    .tl-dot {
+      left: -1.95rem;
+    }
+  }
+  .tl-dot.is-podium {
+    border-color: var(--accent);
+    background: var(--accent);
+    box-shadow: 0 0 12px var(--accent);
+  }
+  .tl-date {
+    font-family: var(--font-mono);
+    font-size: 0.74rem;
+    letter-spacing: 0.04em;
+    color: var(--text-mute);
+    padding-top: 0.22rem;
+  }
+  .tl-title {
+    font-size: 1.05rem;
+    font-weight: 600;
+    line-height: 1.35;
+  }
+  .tl-meta {
+    margin-top: 0.3rem;
+    font-size: 0.85rem;
+    color: var(--text-dim);
+  }
+  .tl-desc {
+    margin-top: 0.5rem;
+    max-width: 46rem;
+    font-size: 0.88rem;
+    line-height: 1.55;
+    color: var(--text-mute);
+  }
+  .tl-side {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  @media (min-width: 1000px) {
+    .tl-side {
+      flex-direction: column;
+      align-items: flex-end;
+    }
+  }
+  .tl-doc {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.55rem;
+    height: 2.4rem;
+    padding: 0.2rem 0.75rem 0.2rem 0.2rem;
+    border-radius: 0.7rem;
+    border: 1px solid var(--line);
+    font-size: 0.78rem;
+    color: var(--text-dim);
+    transition:
+      border-color 0.25s,
+      color 0.25s;
+  }
+  .tl-doc:hover {
+    border-color: color-mix(in oklab, var(--accent) 55%, transparent);
+    color: var(--text);
+  }
+  .tl-doc img {
+    width: 2rem;
+    height: 2rem;
+    border-radius: 0.45rem;
+    object-fit: cover;
+    object-position: top;
+    background: #fff;
+  }
+  .tl-empty {
+    padding: 2rem 0;
+    color: var(--text-mute);
+  }
+</style>

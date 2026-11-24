@@ -43,7 +43,7 @@
   --line-2: rgb(255 255 255 / 0.13);
   --text: var(--color-fog-100);
   --text-dim: var(--color-fog-400);
-  --text-mute: var(--color-fog-600);
+  --text-mute: var(--color-fog-500);
   --accent: var(--color-lime-400);
   --accent-ink: #0b0f02;
   --glow: var(--color-violet-500);
@@ -124,10 +124,11 @@
     mask-image: radial-gradient(ellipse 80% 70% at 50% 40%, #000 30%, transparent 75%);
   }
 
+  /* soft light pools: radial gradients instead of blur filters (cheap to paint, no clipped edges) */
   .glow-blob {
     position: absolute;
     border-radius: 9999px;
-    filter: blur(80px);
+    background: radial-gradient(closest-side, var(--c, var(--glow)), transparent);
     opacity: 0.35;
     pointer-events: none;
   }
@@ -321,9 +322,23 @@ html.js.motion [data-reveal].is-in {
   }
 }
 
-/* View transitions between pages */
+/* View transitions between pages (used by transition:animate={pageAnim} in Base.astro) */
+@keyframes vt-out {
+  to {
+    opacity: 0;
+    transform: translateY(-14px) scale(0.995);
+    filter: blur(6px);
+  }
+}
+@keyframes vt-in {
+  from {
+    opacity: 0;
+    transform: translateY(22px);
+    filter: blur(8px);
+  }
+}
 ::view-transition-old(root),
 ::view-transition-new(root) {
-  animation-duration: 0.45s;
+  animation-duration: 0.35s;
   animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
 }

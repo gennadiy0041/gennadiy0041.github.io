@@ -1,0 +1,19 @@
+---
+import Base from '../layouts/Base.astro';
+import { useT } from '../i18n';
+const t = useT('ru');
+const te = useT('en');
+---
+
+<Base title={`404 — ${t('notfound.title')}`} noindex>
+  <section class="container-x grid min-h-[80svh] place-items-center pt-[var(--nav-h)] text-center">
+    <div>
+      <p class="font-display text-[clamp(6rem,20vw,14rem)] font-bold leading-none tracking-[-0.06em] text-[var(--accent)]">404</p>
+      <p class="mt-4 text-xl">{t('notfound.title')} · <span class="text-[var(--text-dim)]">{te('notfound.title')}</span></p>
+      <div class="mt-10 flex justify-center gap-3">
+        <a href="/" class="btn btn-primary">{t('notfound.back')}</a>
+        <a href="/en/" class="btn btn-ghost">{te('notfound.back')}</a>
+      </div>
+    </div>
+  </section>
+</Base>

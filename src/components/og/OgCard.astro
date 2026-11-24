@@ -1,0 +1,497 @@
+---
+/**
+ * Social preview card (Telegram, LinkedIn, X…): exactly 1200×630 CSS px, screenshotted at DPR 1 by
+ * scripts/postbuild.mjs into /og/<lang>-home.png or /og/<lang>-project-<id>.png — the URLs that
+ * Base.astro puts into og:image.
+ *
+ * Text of unknown length is fitted, never cut mid-word:
+ *   data-fit="<min px>"   the font shrinks 1px at a time until the text fits its box;
+ *   data-fit-wrap="<px>"  …first only down to that size; if it still overflows, the element gets
+ *                         [data-wrapped] (CSS allows one more line) and shrinks again from its full
+ *                         size down to data-fit;
+ *   data-fit-drop="<sel>" …and if even that is not enough, trailing parts matching <sel> (the home
+ *                         card's extra phrases) are removed one at a time, fitting again after each.
+ * Text that still does not fit ends in an ellipsis (line clamp or text-overflow). The card marks
+ * <html data-render-pending> until fitting is done. postbuild waits for that, then checks that all
+ * text stays visible inside its [data-og-box] and reports the elements that needed the ellipsis.
+ */
+import { Image } from 'astro:assets';
+import '../../styles/global.css';
+import { getProfile, getStats, type Project } from '../../lib/data';
+import { loc, useT, yearOf, type Lang } from '../../i18n';
+import { displayUrl, homeSubtitle, pickStats } from '../../lib/resume';
+
+interface Props {
+  lang: Lang;
+  /** omitted for the home card */
+  project?: Project;
+}
+
+const { lang, project } = Astro.props;
+const t = useT(lang);
+const profile = await getProfile();
+const name = loc(profile.name, lang);
+const host = displayUrl(Astro.site!.href);
+
+/** Cover panel of project cards, in CSS px (== image px at DPR 1); full height of the padding box. */
+const COVER = { width: 500, height: 518 };
+
+const home = project
+  ? undefined
+  : {
+      subtitle: homeSubtitle(profile, lang),
+      numbers: pickStats(await getStats(), lang, 3),
+    };
+
+const card = project && {
+  name: project.data.name,
+  tagline: loc(project.data.tagline, lang),
+  result: loc(project.data.result, lang) || loc(project.data.status, lang),
+  event: loc(project.data.event, lang),
+  year: yearOf(project.data.date),
+  cover: project.data.cover ?? project.data.gallery[0]?.src,
+  coverAlt: loc(project.data.coverAlt, lang) || project.data.name,
+  /** shown instead of a cover when the project has no images */
+  initial: Array.from(project.data.name.trim())[0] ?? '',
+  /** optional per-project tint for the glow behind the cover; only plain hex colours are accepted */
+  accent: /^#(?:[0-9a-f]{3,4}|[0-9a-f]{6}|[0-9a-f]{8})$/i.test(project.data.accent ?? '') ? project.data.accent : undefined,
+};
+
+const eyebrow = card
+  ? `${lang === 'ru' ? 'Проект' : 'Project'} · ${card.year}`
+  : [t('nav.projects'), t('nav.achievements'), t('nav.certificates')].join(' · ');
+---
+
+<script is:inline>
+  document.documentElement.setAttribute('data-render-pending', '');
+</script>
+
+<div class="og" data-og={card ? 'project' : 'home'} data-og-box style={card?.accent ? `--og-tint: ${card.accent}` : undefined}>
+  <div class="og-grid" aria-hidden="true"></div>
+
+  <div class="og-main" data-og-box>
+    <div class="og-top">
+      <svg class="og-logo" viewBox="0 0 32 32" width="44" height="44" aria-hidden="true">
+        <rect x="1" y="1" width="30" height="30" rx="9" fill="none" stroke="currentColor" stroke-opacity=".22"></rect>
+        <path d="M19.5 10.5a6.4 6.4 0 1 0 1.6 7.2h-5" fill="none" stroke="var(--accent)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"></path>
+        <path d="M22.5 9.5v13" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"></path>
+        <path d="m22.6 16 4-6.2M22.6 16l4 6.5" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"></path>
+      </svg>
+      <span class="og-eyebrow">{eyebrow}</span>
+    </div>
+
+    <div class="og-body">
+      <h1 class="og-name">{name}</h1>
+      {
+        home?.subtitle &&
+          ('phrases' in home.subtitle ? (
+            <p class="og-sub og-typed" data-fit="22" data-fit-wrap="24" data-fit-drop=".og-item">{
+              // no whitespace outside the items: the separator's spaces are the only ones between phrases,
+              // and nothing may follow the "›" prompt that hangs in the left padding
+              home.subtitle.phrases.map((phrase, i) => (
+                <span class="og-item">{i > 0 && <span class="og-slash" aria-hidden="true">&nbsp;/ </span>}<span class="og-phrase">{phrase}</span></span>
+              ))
+            }</p>
+          ) : (
+            <p class="og-sub" data-fit="22" data-fit-wrap="24">
+              {home.subtitle.intro}
+            </p>
+          ))
+      }
+      {
+        card && (
+          <>
+            <p class="og-sub" data-fit="22" data-fit-wrap="26">
+              <strong>{card.name}</strong>
+              {card.tagline && <span> — {card.tagline}</span>}
+            </p>
+            {(card.result || card.event) && (
+              <p class="og-chips">
+                {/* no whitespace inside the text spans: it would show after the chip's dot */}
+                {card.result && (
+                  <span class="og-chip">
+                    <span class="og-chip-text" data-fit="15" data-fit-wrap="17">{card.result}</span>
+                  </span>
+                )}
+                {card.event && <span class="og-event" data-fit="16">{card.event}</span>}
+              </p>
+            )}
+          </>
+        )
+      }
+    </div>
+
+    <div class="og-foot">
+      <span class="og-host">{host}</span>
+      {
+        home && home.numbers.length > 0 && (
+          <span class="og-numbers">
+            {home.numbers.map((n) => (
+              <span>
+                <b>{n.value}</b> {n.label}
+              </span>
+            ))}
+          </span>
+        )
+      }
+    </div>
+  </div>
+
+  {
+    card && (
+      <figure class="og-cover" data-og-box data-empty={card.cover ? undefined : ''}>
+        {card.cover ? (
+          <Image
+            src={card.cover}
+            alt={card.coverAlt}
+            width={COVER.width}
+            height={COVER.height}
+            widths={[COVER.width]}
+            layout="fixed"
+            fit="cover"
+            position="attention"
+            priority
+          />
+        ) : (
+          <span class="og-initial" aria-hidden="true">
+            {card.initial}
+          </span>
+        )}
+      </figure>
+    )
+  }
+</div>
+
+<script is:inline>
+  (async () => {
+    /** @param {HTMLElement} el */
+    const fits = (el) => el.scrollWidth <= el.clientWidth && el.scrollHeight <= el.clientHeight;
+    /**
+     * Shrinks the font 1px at a time down to `min`; true when the text fits.
+     * @param {HTMLElement} el
+     * @param {number} min
+     */
+    const shrink = (el, min) => {
+      let size = parseFloat(getComputedStyle(el).fontSize);
+      while (!fits(el) && size > min) el.style.fontSize = `${--size}px`;
+      return fits(el);
+    };
+    /**
+     * One pass of data-fit / data-fit-wrap, starting from the CSS font size; true when the text fits.
+     * @param {HTMLElement} el
+     */
+    const fit = (el) => {
+      el.style.fontSize = '';
+      delete el.dataset.wrapped;
+      const min = Number(el.dataset.fit);
+      const wrapAt = el.dataset.fitWrap;
+      if (wrapAt === undefined) return shrink(el, min);
+      if (shrink(el, Number(wrapAt))) return true;
+      // the text would get too small: allow one more line at the full size, then shrink again
+      el.style.fontSize = '';
+      el.dataset.wrapped = '';
+      return shrink(el, min);
+    };
+    try {
+      // Measure with the real faces: load every declared face first (fonts.ready alone can resolve
+      // before layout has requested any of them).
+      await Promise.all(Array.from(document.fonts, (face) => face.load().catch(() => undefined)));
+      await document.fonts.ready;
+      for (const el of document.querySelectorAll('[data-fit]')) {
+        if (!(el instanceof HTMLElement)) continue;
+        const drop = el.dataset.fitDrop;
+        // still too long at the smallest size: drop the last optional part (never the first) and refit
+        while (!fit(el) && drop) {
+          const parts = el.querySelectorAll(drop);
+          if (parts.length < 2) break;
+          parts[parts.length - 1].remove();
+        }
+      }
+    } finally {
+      document.documentElement.removeAttribute('data-render-pending');
+    }
+  })();
+</script>
+
+<style is:global>
+  html,
+  body {
+    width: 1200px;
+    height: 630px;
+    margin: 0;
+    overflow: hidden;
+    background: var(--bg);
+  }
+
+  .og {
+    --og-tint: var(--glow);
+    position: relative;
+    display: flex;
+    gap: 48px;
+    width: 1200px;
+    height: 630px;
+    padding: 56px 64px;
+    overflow: hidden;
+    isolation: isolate;
+    color: var(--text);
+    font-family: var(--font-body), system-ui, sans-serif;
+    background:
+      radial-gradient(560px 420px at 6% -14%, color-mix(in oklab, var(--glow) 55%, transparent), transparent 72%),
+      radial-gradient(520px 360px at 104% 112%, color-mix(in oklab, var(--accent) 20%, transparent), transparent 72%),
+      var(--bg);
+  }
+
+  .og-grid {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background-image:
+      linear-gradient(to right, rgb(255 255 255 / 0.06) 1px, transparent 1px),
+      linear-gradient(to bottom, rgb(255 255 255 / 0.06) 1px, transparent 1px);
+    background-size: 64px 64px;
+    background-position: 63px 55px;
+    mask-image: radial-gradient(ellipse 75% 90% at 30% 35%, #000 20%, transparent 78%);
+  }
+
+  .og-main {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    justify-content: space-between;
+    min-width: 0;
+  }
+
+  .og-top {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+  }
+  .og-logo {
+    flex: none;
+    color: var(--text);
+  }
+  .og-eyebrow {
+    font-family: var(--font-code), monospace;
+    font-size: 17px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+  }
+
+  .og-name {
+    margin: 0;
+    font-family: var(--font-display), sans-serif;
+    font-weight: 600;
+    font-size: 124px;
+    line-height: 0.94;
+    letter-spacing: -0.045em;
+    background: linear-gradient(180deg, #fff 30%, rgb(255 255 255 / 0.62));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    text-wrap: balance;
+  }
+  [data-og='project'] .og-name {
+    font-size: 80px;
+  }
+
+  /* home: phrases (or the intro) on one line, two once [data-wrapped]; project: "Name — tagline" on
+     two lines, three once [data-wrapped] (see the fitting script above) */
+  .og-sub {
+    margin: 30px 0 0;
+    overflow: hidden;
+    font-size: 30px;
+    line-height: 1.3;
+    color: var(--text-dim);
+    text-wrap: balance;
+  }
+  [data-og='home'] .og-sub:not([data-wrapped]) {
+    white-space: nowrap;
+  }
+  [data-og='project'] .og-sub,
+  [data-og='home'] .og-sub[data-wrapped] {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+  }
+  [data-og='project'] .og-sub[data-wrapped] {
+    -webkit-line-clamp: 3;
+  }
+  .og-sub strong {
+    font-family: var(--font-display), sans-serif;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    color: var(--text);
+  }
+  /* the hero's typed line: lime "›" prompt hanging in the margin, phrases as written */
+  .og-typed {
+    padding-left: 0.95em;
+    text-indent: -0.95em;
+  }
+  .og-typed::before {
+    content: '›';
+    display: inline-block;
+    width: 0.95em;
+    text-indent: 0;
+    font-family: var(--font-code), monospace;
+    color: var(--accent);
+  }
+  /* phrases never break inside (unless a single one is left and needs two lines); a wrapped line
+     ends with the lime slash, glued to its phrase by the &nbsp; */
+  .og-phrase {
+    white-space: nowrap;
+  }
+  .og-typed[data-wrapped] .og-item:only-child .og-phrase {
+    white-space: normal;
+  }
+  .og-slash {
+    color: var(--accent);
+  }
+
+  /* result chip and event: side by side, or the event on its own line when both do not fit */
+  .og-chips {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 12px 18px;
+    margin: 24px 0 0;
+  }
+  .og-chip,
+  .og-event {
+    flex: 0 1 auto;
+    min-width: 0;
+    max-width: 100%;
+  }
+  .og-chip-text,
+  .og-event {
+    display: block;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+  /* The pill carries the padding and the glowing dot; the text inside has no vertical padding (a
+     clamped line cannot show through) and a fixed line height, which keeps the dot centred on the
+     first line whatever size the text was fitted to. */
+  .og-chip {
+    --chip-pad: 10px;
+    --chip-line: 24px;
+    position: relative;
+    padding: var(--chip-pad) 20px var(--chip-pad) 41px;
+    border: 1.5px solid color-mix(in oklab, var(--accent) 50%, transparent);
+    border-radius: 999px;
+    background: color-mix(in oklab, var(--accent) 9%, transparent);
+  }
+  .og-chip::before {
+    content: '';
+    position: absolute;
+    top: calc(var(--chip-pad) + var(--chip-line) / 2 - 4.5px);
+    left: 20px;
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    background: var(--accent);
+    box-shadow: 0 0 14px var(--accent);
+  }
+  .og-chip:has(> [data-wrapped]) {
+    border-radius: 22px;
+  }
+  .og-chip-text {
+    font-family: var(--font-code), monospace;
+    font-size: 19px;
+    line-height: var(--chip-line);
+    letter-spacing: 0.02em;
+    color: var(--accent);
+  }
+  /* a result too long for one line: two lines in a rounded box */
+  .og-chip-text[data-wrapped] {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    white-space: normal;
+  }
+  .og-event {
+    font-size: 21px;
+    color: var(--text-dim);
+  }
+
+  .og-foot {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    font-family: var(--font-code), monospace;
+    font-size: 19px;
+    letter-spacing: 0.04em;
+    color: var(--text-dim);
+  }
+  .og-host {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .og-host::before {
+    content: '';
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    background: var(--accent);
+    box-shadow: 0 0 14px var(--accent);
+  }
+  .og-numbers {
+    display: flex;
+    gap: 28px;
+    font-size: 17px;
+  }
+  .og-numbers b {
+    font-weight: 500;
+    color: var(--text);
+  }
+
+  .og-cover {
+    position: relative;
+    flex: none;
+    width: 500px;
+    height: 518px;
+    margin: 0;
+    border: 1px solid var(--line-2);
+    border-radius: 28px;
+    overflow: hidden;
+    background: var(--surface);
+    box-shadow:
+      0 0 0 6px rgb(255 255 255 / 0.025),
+      0 30px 120px -30px color-mix(in oklab, var(--og-tint) 70%, transparent);
+  }
+  .og-cover img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    max-width: none;
+    object-fit: cover;
+  }
+  /* no images: the project's initial on a faint grid, lit by the tint (a filled glyph — an outline
+     would show the variable font's overlapping contours) */
+  .og-cover[data-empty] {
+    display: grid;
+    place-items: center;
+    background:
+      radial-gradient(circle at 50% 46%, color-mix(in oklab, var(--og-tint) 34%, transparent), transparent 68%),
+      linear-gradient(to right, rgb(255 255 255 / 0.045) 1px, transparent 1px) -1px -1px / 40px 40px,
+      linear-gradient(to bottom, rgb(255 255 255 / 0.045) 1px, transparent 1px) -1px -1px / 40px 40px,
+      var(--surface);
+  }
+  .og-initial {
+    font-family: var(--font-display), sans-serif;
+    font-weight: 700;
+    font-size: 300px;
+    line-height: 1;
+    background: linear-gradient(
+      170deg,
+      color-mix(in oklab, var(--accent) 55%, white) 5%,
+      var(--accent) 40%,
+      color-mix(in oklab, var(--accent) 12%, transparent) 96%
+    );
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+</style>

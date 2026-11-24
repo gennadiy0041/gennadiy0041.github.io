@@ -1,15 +1,27 @@
 ---
 import Base from '../layouts/Base.astro';
-import { getAchievements, getProjects } from '../lib/data';
-import { getLang, loc } from '../i18n';
+import Hero from './Hero.astro';
+import Stats from './home/Stats.astro';
+import Venues from './home/Venues.astro';
+import Projects from './home/Projects.astro';
+import Timeline from './home/Timeline.astro';
+import Documents from './home/Documents.astro';
+import Skills from './home/Skills.astro';
+import About from './home/About.astro';
+import Contacts from './home/Contacts.astro';
+import { getLang } from '../i18n';
+
 const lang = getLang(Astro.currentLocale);
-const ach = await getAchievements();
-const prj = await getProjects();
 ---
-<Base>
-  <section id="top" class="container-x pt-40">
-    <h1 class="section-title">Әә Ғғ Ққ Ңң Өө Ұұ Үү Іі Һһ — Геннадий Козлов</h1>
-    <ul>{ach.map((a) => <li>{a.data.date} — {loc(a.data.title, lang)}</li>)}</ul>
-    <ul>{prj.map((p) => <li>{p.data.name}</li>)}</ul>
-  </section>
+
+<Base ogKey="home">
+  <Hero lang={lang} />
+  <Venues lang={lang} />
+  <Stats lang={lang} />
+  <Projects lang={lang} />
+  <Timeline lang={lang} />
+  <Documents lang={lang} />
+  <Skills lang={lang} />
+  <About lang={lang} />
+  <Contacts lang={lang} />
 </Base>

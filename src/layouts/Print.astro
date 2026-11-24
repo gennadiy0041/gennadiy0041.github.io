@@ -1,0 +1,38 @@
+---
+/**
+ * Bare document shell for pages that exist only to be rendered into files by scripts/postbuild.mjs
+ * (the résumé PDF and the social-card PNGs). Fonts only: no nav, no view transitions, no app
+ * scripts, no global stylesheet — each document brings its own styles. Never indexed: postbuild
+ * deletes these pages from dist and the sitemap filters them out.
+ */
+import { Font } from 'astro:assets';
+import type { Lang } from '../i18n';
+
+interface Props {
+  lang: Lang;
+  title: string;
+  /** light for paper, dark for the social cards */
+  scheme?: 'light' | 'dark';
+}
+
+const { lang, title, scheme = 'light' } = Astro.props;
+---
+
+<!doctype html>
+<html lang={lang} data-lang={lang}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex, nofollow" />
+    <meta name="color-scheme" content={scheme} />
+    <title>{title}</title>
+    {/* an inline empty icon: otherwise the browser probes /favicon.ico while postbuild renders */}
+    <link rel="icon" href="data:," />
+    <Font cssVariable="--font-display" />
+    <Font cssVariable="--font-body" />
+    <Font cssVariable="--font-code" />
+  </head>
+  <body>
+    <slot />
+  </body>
+</html>

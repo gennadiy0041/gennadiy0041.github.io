@@ -1,0 +1,152 @@
+---
+import { getImage } from 'astro:assets';
+import SectionHead from '../SectionHead.astro';
+import { getAchievements } from '../../lib/data';
+import { fmtAchDate, loc, useT, type Lang } from '../../i18n';
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const t = useT(lang);
+const INITIAL = 12;
+// Featured documents first, then newest.
+const withDocs = (await getAchievements()).filter((a) => a.data.image && a.data.imageKind !== 'photo').sort((a, b) => Number(b.data.featured) - Number(a.data.featured));
+const docs = await Promise.all(
+  withDocs.map(async (a) => {
+    const img = a.data.image!;
+    const [thumb, big, mid] = await Promise.all([
+      getImage({ src: img, width: 520, format: 'webp' }),
+      getImage({ src: img, width: 1800, format: 'webp' }),
+      getImage({ src: img, width: 1000, format: 'webp' }),
+    ]);
+    return { a, thumb, big, mid, w: img.width, h: img.height };
+  }),
+);
+---
+
+{
+  docs.length > 0 && (
+    <section id="documents" class="relative py-24 md:py-32" data-section data-section-label={t('nav.certificates')} aria-labelledby="documents-title">
+      <div class="container-x">
+        <SectionHead index="04" eyebrow={t('certs.eyebrow')} title={t('certs.title')} lead={t('certs.lead')} id="documents-title" />
+        <ul class="docs-grid" role="list" data-docs data-collapsed={docs.length > INITIAL ? '' : undefined}>
+          {docs.map(({ a, thumb, big, mid, w, h }, i) => (
+            <li class="doc" data-reveal style={`--d:${(i % 4) * 0.06}s`}>
+              <button
+                type="button"
+                class="doc-btn"
+                data-lb
+                data-lb-group="documents"
+                data-lb-id={a.id}
+                data-lb-src={big.src}
+                data-lb-srcset={`${mid.src} 1000w, ${big.src} 1800w`}
+                data-lb-w={w}
+                data-lb-h={h}
+                data-lb-caption={loc(a.data.title, lang)}
+                data-lb-sub={[fmtAchDate(a.data.date, a.data.dateApprox, lang), loc(a.data.issuer, lang)].filter(Boolean).join(' · ')}
+                data-tilt
+              >
+                <span class="doc-paper">
+                  <img src={thumb.src} alt={loc(a.data.imageAlt, lang) || loc(a.data.title, lang)} width={thumb.attributes.width} height={thumb.attributes.height} loading="lazy" decoding="async" />
+                </span>
+                <span class="doc-cap">
+                  <span class="doc-title">{loc(a.data.title, lang)}</span>
+                  <span class="doc-sub">{[(a.data.dateApprox ? '≈ ' : '') + String(a.data.date).slice(0, 4), loc(a.data.issuer, lang)].filter(Boolean).join(' · ')}</span>
+                </span>
+              </button>
+            </li>
+          ))}
+        </ul>
+        {docs.length > INITIAL && (
+          <div class="mt-10 flex justify-center">
+            <button type="button" class="btn btn-ghost" data-docs-toggle aria-expanded="false" data-more={t('certs.more')} data-less={t('certs.less')}>
+              <span data-docs-label>{t('certs.more')}</span>
+              <span class="font-mono text-xs text-[var(--text-mute)]">{docs.length}</span>
+            </button>
+          </div>
+        )}
+      </div>
+    </section>
+  )
+}
+
+<style>
+  .docs-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1rem;
+  }
+  @media (min-width: 768px) {
+    .docs-grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+  @media (min-width: 1100px) {
+    .docs-grid {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 1.25rem;
+    }
+  }
+  .docs-grid[data-collapsed] .doc:nth-child(n + 13) {
+    display: none;
+  }
+  .doc-btn {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    text-align: left;
+    border-radius: 1rem;
+    border: 1px solid var(--line);
+    background: rgb(255 255 255 / 0.02);
+    padding: 0.6rem;
+    transition:
+      border-color 0.3s,
+      transform 0.5s var(--ease-out-expo),
+      box-shadow 0.5s var(--ease-out-expo);
+  }
+  .doc-btn:hover {
+    border-color: var(--line-2);
+    box-shadow: 0 24px 60px -30px color-mix(in oklab, var(--accent) 40%, transparent);
+  }
+  .doc-paper {
+    display: block;
+    aspect-ratio: 4 / 5;
+    overflow: hidden;
+    border-radius: 0.65rem;
+    background: linear-gradient(180deg, #1b1f25, #121519);
+    border: 1px solid var(--line);
+  }
+  .doc-paper img {
+    width: 100%;
+    height: 100%;
+    padding: 0.45rem;
+    object-fit: contain;
+    transition: transform 0.9s var(--ease-out-expo);
+  }
+  .doc-btn:hover .doc-paper img {
+    transform: scale(1.04);
+  }
+  .doc-cap {
+    display: grid;
+    gap: 0.25rem;
+    padding: 0.8rem 0.3rem 0.3rem;
+  }
+  .doc-title {
+    font-size: 0.86rem;
+    font-weight: 600;
+    line-height: 1.35;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .doc-sub {
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    color: var(--text-mute);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+</style>

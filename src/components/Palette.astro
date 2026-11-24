@@ -1,6 +1,431 @@
 ---
-// STUB — implemented by the palette module (Ctrl+K search)
-import type { Lang } from '../i18n';
-interface Props { lang: Lang }
+/**
+ * Command palette (Ctrl/⌘+K, "/", [data-palette-open]). Static shell only: results are
+ * rendered by src/scripts/palette.ts from the #site-index JSON and the page's sections.
+ */
+import { useT, type Lang } from '../i18n';
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const t = useT(lang);
 ---
-<div id="palette-root" hidden></div>
+
+<div
+  id="palette"
+  class="pal"
+  data-label-project={t('palette.group.projects')}
+  data-label-achievement={t('palette.group.achievements')}
+  data-label-section={t('palette.group.sections')}
+  data-label-empty={t('palette.empty')}
+  data-lenis-prevent
+  hidden
+>
+  <div class="pal-backdrop" data-part="backdrop" aria-hidden="true"></div>
+  <div class="pal-panel glass" data-part="panel" role="dialog" aria-modal="true" aria-label={t('nav.search')}>
+    <div class="pal-head">
+      <svg class="pal-icon" viewBox="0 0 24 24" width="19" height="19" aria-hidden="true">
+        <circle cx="11" cy="11" r="6.5" fill="none" stroke="currentColor" stroke-width="1.8"></circle>
+        <path d="m16 16 4.5 4.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"></path>
+      </svg>
+      <input
+        class="pal-input"
+        data-part="input"
+        type="text"
+        role="combobox"
+        aria-label={t('nav.search')}
+        aria-autocomplete="list"
+        aria-controls="pal-list"
+        aria-expanded="false"
+        placeholder={t('palette.placeholder')}
+        autocomplete="off"
+        autocapitalize="off"
+        autocorrect="off"
+        spellcheck="false"
+        enterkeyhint="go"
+      />
+      <button type="button" class="pal-close" data-part="close" aria-label={t('nav.close')} aria-keyshortcuts="Escape">
+        <span class="pal-esc" aria-hidden="true">esc</span>
+        <svg class="pal-x" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
+          <path d="m6.5 6.5 11 11m0-11-11 11" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"></path>
+        </svg>
+      </button>
+    </div>
+
+    <div class="pal-scroll" data-part="scroller">
+      <div id="pal-list" class="pal-list" data-part="list" role="listbox" aria-label={t('nav.search')}></div>
+      <div class="pal-empty" data-part="empty" hidden>
+        <svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true">
+          <circle cx="11" cy="11" r="6.5" fill="none" stroke="currentColor" stroke-width="1.4"></circle>
+          <path d="m16 16 4.5 4.5M8.6 13.4l4.8-4.8m0 4.8L8.6 8.6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"></path>
+        </svg>
+        <p class="pal-empty-title">{t('palette.empty')}</p>
+        <p class="pal-empty-query" data-part="empty-query"></p>
+      </div>
+    </div>
+    <p class="sr-only" data-part="live" role="status"></p>
+
+    <div class="pal-foot" aria-hidden="true">
+      <span><span class="kbd">↑</span><span class="kbd">↓</span>{t('palette.hint.move')}</span>
+      <span><span class="kbd">↵</span>{t('palette.hint.open')}</span>
+      <span><span class="kbd">esc</span>{t('palette.hint.close')}</span>
+    </div>
+  </div>
+</div>
+
+<style is:global>
+  /* Rows are created by the script, so the styles are global and prefixed .pal. */
+  .pal {
+    position: fixed;
+    inset: 0;
+    z-index: 80;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    /* top-anchored like Raycast/Linear: the input never jumps while results change height */
+    padding: clamp(0.75rem, 12vh, 8rem) 0.75rem 0.75rem;
+  }
+  .pal-backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgb(5 6 7 / 0.62);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    touch-action: none;
+  }
+  .pal-panel {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    width: min(40rem, 100%);
+    max-height: min(70vh, 100%);
+    border-radius: 1.1rem;
+    overflow: hidden;
+    background: color-mix(in oklab, var(--color-ink-850) 84%, transparent);
+    backdrop-filter: blur(22px) saturate(150%);
+    -webkit-backdrop-filter: blur(22px) saturate(150%);
+    border-color: var(--line-2);
+    box-shadow:
+      0 0 0 1px rgb(0 0 0 / 0.45),
+      0 32px 90px -28px rgb(0 0 0 / 0.9),
+      0 0 160px -60px color-mix(in oklab, var(--glow) 80%, transparent);
+    transform-origin: 50% 0;
+  }
+  .pal-panel::before {
+    content: '';
+    position: absolute;
+    inset: 0 12% auto;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgb(255 255 255 / 0.28), transparent);
+    pointer-events: none;
+  }
+
+  .pal-head {
+    flex: none;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    height: 3.6rem;
+    padding: 0 0.85rem 0 1.15rem;
+    border-bottom: 1px solid var(--line);
+  }
+  .pal-icon {
+    flex: none;
+    color: var(--text-dim);
+  }
+  .pal-input {
+    flex: 1;
+    min-width: 0;
+    height: 100%;
+    border: 0;
+    background: transparent;
+    color: var(--text);
+    font-size: 1.05rem;
+    letter-spacing: -0.005em;
+    caret-color: var(--accent);
+  }
+  .pal-input::placeholder {
+    color: var(--text-mute);
+  }
+  .pal-input:focus,
+  .pal-input:focus-visible {
+    outline: none;
+  }
+  .pal-close {
+    flex: none;
+    display: inline-grid;
+    place-items: center;
+    height: 1.6rem;
+    padding: 0 0.45rem;
+    border-radius: 0.45rem;
+    border: 1px solid var(--line-2);
+    background: rgb(255 255 255 / 0.04);
+    color: var(--text-dim);
+    font-family: var(--font-mono);
+    font-size: 0.66rem;
+    letter-spacing: 0.04em;
+    transition:
+      color 0.2s,
+      border-color 0.2s,
+      background-color 0.2s;
+  }
+  .pal-close:hover {
+    color: var(--text);
+    border-color: rgb(255 255 255 / 0.24);
+    background: rgb(255 255 255 / 0.07);
+  }
+  .pal-x {
+    display: none;
+  }
+
+  .pal-scroll {
+    position: relative;
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    padding: 0.4rem;
+    scrollbar-width: thin;
+    scrollbar-color: rgb(255 255 255 / 0.16) transparent;
+  }
+  .pal-group + .pal-group {
+    margin-top: 0.3rem;
+  }
+  .pal-ghead {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.7rem 0.75rem 0.4rem;
+    font-family: var(--font-mono);
+    font-size: 0.66rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--text-mute);
+  }
+  .pal-gcount {
+    letter-spacing: 0.04em;
+    font-variant-numeric: tabular-nums;
+  }
+  .pal-item {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    min-height: 3.3rem;
+    padding: 0.45rem 0.7rem;
+    border-radius: 0.75rem;
+    color: var(--text-dim);
+    cursor: pointer;
+    scroll-margin: 0.4rem;
+  }
+  .pal-item[aria-selected='true'] {
+    background: rgb(255 255 255 / 0.055);
+    box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.06);
+    color: var(--text);
+  }
+  .pal-item[aria-selected='true']::before {
+    content: '';
+    position: absolute;
+    left: -0.4rem;
+    top: 0.85rem;
+    bottom: 0.85rem;
+    width: 2px;
+    border-radius: 2px;
+    background: var(--accent);
+    box-shadow: 0 0 12px var(--accent);
+  }
+  .pal-lead {
+    flex: none;
+    display: grid;
+    place-items: center;
+    width: 2.4rem;
+    height: 2.4rem;
+    border-radius: 0.6rem;
+    border: 1px solid var(--line);
+    background: rgb(255 255 255 / 0.03);
+    color: var(--text-mute);
+    overflow: hidden;
+    transition:
+      color 0.2s,
+      border-color 0.2s;
+  }
+  .pal-item[aria-selected='true'] .pal-lead {
+    color: var(--accent);
+    border-color: var(--line-2);
+  }
+  .pal-thumb {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .pal-body {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+  }
+  .pal-title,
+  .pal-meta {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .pal-title {
+    color: var(--text);
+    font-size: 0.93rem;
+    font-weight: 500;
+    line-height: 1.3;
+  }
+  .pal-meta {
+    font-size: 0.76rem;
+    line-height: 1.3;
+    color: var(--text-mute);
+  }
+  .pal-item[aria-selected='true'] .pal-meta {
+    color: var(--text-dim);
+  }
+  .pal-dot {
+    margin-inline: 0.4em;
+    opacity: 0.6;
+  }
+  .pal mark {
+    color: var(--accent);
+    background: color-mix(in oklab, var(--accent) 16%, transparent);
+    border-radius: 0.2em;
+    box-decoration-break: clone;
+    -webkit-box-decoration-break: clone;
+  }
+  .pal-badge {
+    flex: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    max-width: 12rem;
+    height: 1.45rem;
+    padding: 0 0.55rem;
+    border-radius: 999px;
+    border: 1px solid var(--line-2);
+    font-family: var(--font-mono);
+    font-size: 0.64rem;
+    letter-spacing: 0.02em;
+    color: var(--text-dim);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .pal-badge.is-podium {
+    color: var(--accent);
+    border-color: color-mix(in oklab, var(--accent) 40%, transparent);
+    background: color-mix(in oklab, var(--accent) 7%, transparent);
+  }
+  .pal-badge svg {
+    flex: none;
+  }
+  .pal-enter {
+    flex: none;
+    display: grid;
+    place-items: center;
+    width: 1.6rem;
+    height: 1.6rem;
+    border-radius: 0.4rem;
+    border: 1px solid var(--line-2);
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    color: var(--text-dim);
+    visibility: hidden;
+  }
+  .pal-item[aria-selected='true'] .pal-enter {
+    visibility: visible;
+  }
+
+  .pal-empty {
+    display: grid;
+    justify-items: center;
+    gap: 0.45rem;
+    padding: 2.6rem 1rem 2.8rem;
+    text-align: center;
+    color: var(--text-mute);
+  }
+  .pal-empty-title {
+    margin-top: 0.35rem;
+    color: var(--text-dim);
+    font-size: 0.95rem;
+  }
+  .pal-empty-query {
+    max-width: 100%;
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    overflow-wrap: anywhere;
+  }
+
+  .pal-foot {
+    flex: none;
+    display: flex;
+    align-items: center;
+    gap: 1.15rem;
+    height: 2.6rem;
+    padding: 0 1.1rem;
+    border-top: 1px solid var(--line);
+    font-size: 0.72rem;
+    color: var(--text-mute);
+  }
+  .pal-foot > span {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+  }
+  .pal-foot .kbd {
+    min-width: 1.25rem;
+    height: 1.25rem;
+    font-size: 0.62rem;
+  }
+
+  /* Touch devices: no keyboard hints, a real close button instead of the "esc" chip. */
+  @media (hover: none), (pointer: coarse) {
+    .pal-foot,
+    .pal-esc,
+    .pal-enter {
+      display: none;
+    }
+    .pal-x {
+      display: block;
+    }
+    .pal-close {
+      width: 2.4rem;
+      height: 2.4rem;
+      margin-right: -0.35rem;
+      padding: 0;
+      border-radius: 999px;
+    }
+  }
+  @media (max-width: 640px) {
+    .pal {
+      padding: max(0.6rem, env(safe-area-inset-top)) 0.6rem 0.6rem;
+    }
+    .pal-panel {
+      max-height: min(80dvh, 100%);
+      border-radius: 1rem;
+    }
+    .pal-head {
+      height: 3.4rem;
+      padding-left: 1rem;
+    }
+    /* 16px+ keeps iOS from zooming into the field */
+    .pal-input {
+      font-size: 1rem;
+    }
+    .pal-item {
+      min-height: 3.5rem;
+    }
+    .pal-badge {
+      display: none;
+    }
+  }
+
+  /* Destinations focused by the palette (skip-link style) get no ring around a whole section. */
+  [data-palette-focus]:focus {
+    outline: none;
+  }
+</style>

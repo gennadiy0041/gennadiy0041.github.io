@@ -14,3 +14,7 @@ node_modules/
 Thumbs.db
 desktop.ini
 *.log
+.claude/
+astro.config.agent-*.mjs
+src/pages/dev-*.astro
+scripts/**/*.test.mjs

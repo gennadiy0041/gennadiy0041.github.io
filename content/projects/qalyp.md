@@ -1,0 +1,48 @@
+---
+name: "Qalyp"
+tagline: { ru: "Проверка курсовых и дипломных по методичке конкретного вуза с помощью ИИ — для студентов и нормоконтролёров Казахстана", en: "Checks term papers and theses against each university's style guide with AI — for students and reviewers in Kazakhstan" }
+event: { ru: "StartUp Battle — IT FEST 2026 (заявка)", en: "StartUp Battle — IT FEST 2026 (application)" }
+date: 2026-11-18
+period: { ru: "сентябрь–ноябрь 2026", en: "September–November 2026" }
+status: { ru: "MVP работает онлайн", en: "MVP live online" }
+result: { ru: "", en: "" }
+team: { ru: "Команда из двух человек: он делает продукт и код, второй участник — дизайн и питч", en: "A two-person team: he builds the product and the code; his teammate handles design and the pitch" }
+problem: { ru: "В Казахстане нет единого государственного стандарта оформления дипломных работ: правила задаёт каждый вуз своей методичкой, нормоконтролёр сверяет с ней работу вручную в самом конце, перед защитой, и без исправления замечаний к защите не допускают. При этом студенты пишут с ИИ, а языковые модели выдумывают источники: в исследовании 2026 года GPT-5.3 без поиска выдумал 27% ссылок по нейрореанимации.", en: "Kazakhstan has no single national standard for formatting theses: each university sets its own rules in a style guide, a reviewer checks every paper against it by hand at the very end, just before the defence, and a student cannot defend until the remarks are fixed. Meanwhile students write with AI, and language models make up references: in a 2026 study, 27% of the neurocritical-care citations GPT-5.3 produced without web search were fabricated." }
+did:
+  ru: |
+    - В сентябре 2026 собрал в Claude первую версию — одностраничный прототип, который проверял .docx прямо в браузере, а в ноябре вместе с ИИ-агентом Claude Code превратил его в веб-приложение на Node.js с сервером, автотестами и деплоем на Railway.
+    - Сделал проверку оформления кодом, без ИИ, чтобы результат был повторяемым: программа читает разметку .docx и ищет 38 видов замечаний — поля во всех разделах, шрифт, интервалы, отступы, заголовки, подписи рисунков и таблиц (в том числе казахские «Сурет 1», «1-кесте»), нумерацию страниц, список источников и ссылки в тексте. Автоисправление сохраняет новый .docx и не отдаёт файл, если после правок не сошлись текст, формулы, таблицы или рисунки.
+    - Превратил методичку в правила: Claude Opus 5.5 выписывает из неё требования к оформлению с дословной цитатой и пунктом, код проверяет, что цитата действительно есть в тексте и значение в допустимых пределах, а включает профиль только человек. Так собрал библиотеку профилей 7 вузов Казахстана из их открытых методичек; вузами профили не утверждены.
+    - Добавил проверку смысла и источников: ИИ смотрит, есть ли во введении цель, задачи, объект, предмет и методы и отвечает ли заключение на задачи, — всё найденное подтверждает цитатой. Список литературы сервер сверяет с Crossref, OpenAlex и adilet.zan.kz, ИИ отмечает признаки подделки, а человек видит «Высокий риск — проверьте вручную»; на предварительном замере по 185 записям так помечено 54% выдуманных источников при 2,3% ложных тревог.
+    - Для нормоконтролёра сделал режим с решением «подтверждаю / не согласен» по каждому замечанию и протоколом в PDF, а также проверку группы: до 60 работ за раз, кодом в браузере, с таблицей, частыми нарушениями и выгрузкой в CSV.
+    - Файл работы не покидает браузер: на сервер уходят только введение, заключение и список источников — без ФИО с титульного листа, e-mail и телефонов и только после согласия пользователя. Модель выбрал по замерам: из трёх моделей Claude Opus 5.5 находит в 1,6 раза больше правил методички, чем две другие (предварительно).
+  en: |
+    - Built the first version in Claude in September 2026 — a single-page prototype that checked a .docx right in the browser — and in November turned it, together with the Claude Code AI agent, into a Node.js web app with a server, automated tests and a Railway deployment.
+    - Made formatting a job for code, not AI, so results are repeatable: the app reads the .docx markup and looks for 38 kinds of issues — margins in every section, fonts, spacing, indents, headings, figure and table captions (Kazakh ones included), page numbers, the reference list and in-text citations. Auto-fix saves a new .docx and withholds it if the text, formulas, tables or images no longer match the original.
+    - Turned style guides into rules: Claude Opus 5.5 lists the formatting requirements, each with a verbatim quote and clause number; code confirms each quote is really in the text and each value is within sane limits, and only a person can switch a profile on. That is how the library of profiles for 7 universities in Kazakhstan was built from their public style guides; the universities have not approved them.
+    - Added content and reference checks: AI looks at whether the introduction states the aim, objectives, object, subject and methods and whether the conclusion answers the objectives, quoting the text for everything it finds. The server matches the reference list against Crossref, OpenAlex and adilet.zan.kz, AI notes signs of a made-up entry, and a person sees “High risk — check manually”; in a preliminary test on 185 entries, 54% of made-up references were flagged at a 2.3% false-alarm rate.
+    - Built a reviewer mode with a confirm-or-disagree decision on every finding and a PDF protocol, plus a group check of up to 60 papers at once, run by code in the browser, with a table, the most common issues and CSV export.
+    - The paper file never leaves the browser: only the introduction, conclusion and reference list reach the server, with the title-page names, e-mails and phone numbers removed, and only after the user agrees. The model was chosen by measurement: in preliminary tests Opus 5.5 found 1.6 times more style-guide rules than the other two Claude models.
+outcome: { ru: "Qalyp работает онлайн без регистрации, код — в публичном репозитории на GitHub; проверка оформления, автоисправление и проверка группы идут прямо в браузере, без ИИ. К StartUp Battle — IT FEST 2026 (категория «Студенты») подготовлены дек, бизнес-план, Lean Canvas, разбор конкурентов и AI-карта; итоги отбора пока не известны. Замеры качества ИИ предварительные — эталон методичек ещё проверяет человек, а точность на настоящих работах в сравнении с нормоконтролёром пока не измерена.", en: "Qalyp runs online with no sign-up, and the code is in a public GitHub repository; the formatting check, auto-fix and group check run right in the browser, without AI. For StartUp Battle — IT FEST 2026 (Students category), a deck, business plan, Lean Canvas, competitor review and AI map have been prepared; the selection results are not known yet. The AI figures are preliminary until a person finishes checking the style-guide benchmark, and accuracy on real papers against a human reviewer has not been measured yet." }
+stack: [ "JavaScript", "Node.js", "Express", "Claude API", "OOXML (.docx)", "JSZip", "Crossref API", "OpenAlex API", "Railway", "Claude Code" ]
+metrics:
+  - { value: "43 → 80", label: { ru: "балл примера курсовой до и после автоисправления", en: "sample term paper score before and after auto-fix" } }
+  - { value: "61/68", label: { ru: "параметров оформления ИИ нашёл в 7 методичках без единой ошибки (предварительный замер)", en: "formatting values AI found in 7 style guides, none of them wrong (preliminary test)" } }
+  - { value: "7", label: { ru: "вузов Казахстана в библиотеке профилей — из их открытых методичек", en: "universities in Kazakhstan in the profile library, built from their public style guides" } }
+  - { value: "≈ $0.43", label: { ru: "и около 2 минут работы ИИ на профиль нового вуза", en: "and about 2 minutes of AI time per new university profile" } }
+links:
+  - { label: { ru: "Живой продукт", en: "Live product" }, url: "https://qalyp-web-production.up.railway.app", kind: demo }
+  - { label: { ru: "Код на GitHub", en: "Code on GitHub" }, url: "https://github.com/gennadiy0041/qalyp", kind: repo }
+  - { label: { ru: "Страница StartUp Battle — IT FEST 2026", en: "StartUp Battle — IT FEST 2026 page" }, url: "https://itfest.kz/ready-solutions/", kind: event }
+cover: ./media/qalyp/cover.webp
+coverAlt: { ru: "Отчёт Qalyp по встроенному примеру курсовой: 43 из 100, 11 ошибок и 8 предупреждений, кнопка «Исправить оформление» и штамп «Предварительная проверка — решение принимает нормоконтролёр»", en: "Qalyp report on the built-in sample term paper: 43 out of 100, 11 errors and 8 warnings, a ‘Fix formatting’ button and a ‘Preliminary check — the reviewer decides’ stamp" }
+gallery:
+  - { src: ./media/qalyp/1.webp, caption: { ru: "Тот же пример после автоисправления: 80 из 100, поля, нумерация страниц и шрифт — по профилю", en: "The same sample after auto-fix: 80 out of 100, with margins, page numbering and font matching the profile" } }
+  - { src: ./media/qalyp/2.webp, caption: { ru: "Правила из методички AlmaU, собранные ИИ: у каждого цитата и пункт, включает профиль человек", en: "Rules AI extracted from AlmaU's style guide, each with a quote and clause; a person switches the profile on" } }
+  - { src: ./media/qalyp/3.webp, caption: { ru: "Режим нормоконтролёра: решение по каждому замечанию и протокол в PDF", en: "Reviewer mode: a decision on every finding and a PDF protocol" } }
+  - { src: ./media/qalyp/4.webp, caption: { ru: "Проверка группы — кодом, без ИИ: таблица, частые нарушения, CSV (пример до и после исправления)", en: "Group check by code, no AI: a table, common issues and CSV (the sample before and after the fix)" } }
+size: sm
+order: 3
+featured: true
+achievements: []
+---

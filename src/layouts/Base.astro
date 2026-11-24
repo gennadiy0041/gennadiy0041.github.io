@@ -27,6 +27,18 @@ const ruUrl = new URL(localizePath(path, 'ru'), site).href;
 const enUrl = new URL(localizePath(path, 'en'), site).href;
 const ogImage = new URL(`/og/${lang}-${ogKey}.png`, site).href;
 const clientIndex = await buildClientIndex(lang);
+
+// Page transition: the old page lifts and blurs out, the new one settles in. ClientRouter skips it for reduced motion.
+const pageAnim = {
+  forwards: {
+    old: { name: 'vt-out', duration: '0.32s', easing: 'cubic-bezier(0.4, 0, 1, 1)', fillMode: 'both' },
+    new: { name: 'vt-in', duration: '0.6s', delay: '0.12s', easing: 'cubic-bezier(0.16, 1, 0.3, 1)', fillMode: 'both' },
+  },
+  backwards: {
+    old: { name: 'vt-out', duration: '0.32s', easing: 'cubic-bezier(0.4, 0, 1, 1)', fillMode: 'both' },
+    new: { name: 'vt-in', duration: '0.6s', delay: '0.12s', easing: 'cubic-bezier(0.16, 1, 0.3, 1)', fillMode: 'both' },
+  },
+};
 ---
 
 <!doctype html>
@@ -96,7 +108,7 @@ const clientIndex = await buildClientIndex(lang);
     >
     <div class="grain" aria-hidden="true" transition:persist="grain"></div>
     <Nav lang={lang} />
-    <main id="main" transition:animate="fade">
+    <main id="main" transition:animate={pageAnim}>
       <slot />
     </main>
     <Footer lang={lang} />

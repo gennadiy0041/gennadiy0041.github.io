@@ -1,6 +1,323 @@
 ---
-// STUB — implemented by the lightbox module
-import type { Lang } from '../i18n';
-interface Props { lang: Lang }
+/**
+ * Full-screen image viewer for every [data-lb] trigger (see src/scripts/lightbox.ts for the
+ * attribute API). Rendered once per page by Base.astro; the script wires it on each page load.
+ */
+import { useT, type Lang } from '../i18n';
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const t = useT(lang);
 ---
-<div id="lightbox-root" hidden></div>
+
+<div
+  id="lightbox"
+  class="lbx"
+  role="dialog"
+  aria-modal="true"
+  aria-label={t('timeline.doc')}
+  data-label={t('timeline.doc')}
+  data-lenis-prevent
+  hidden
+>
+  <div class="lbx-backdrop" data-part="backdrop" aria-hidden="true"></div>
+
+  <div class="lbx-stage" data-part="stage">
+    <div class="lbx-frame" data-part="frame">
+      <img class="lbx-ph" data-part="ph" alt="" aria-hidden="true" draggable="false" decoding="async" hidden />
+      <img class="lbx-img" data-part="img" alt="" draggable="false" decoding="async" />
+      <span class="lbx-spinner" data-part="spinner" aria-hidden="true" hidden></span>
+    </div>
+  </div>
+
+  <div class="lbx-top" data-part="top">
+    <p class="lbx-count" data-part="count" aria-hidden="true"></p>
+    <div class="lbx-actions">
+      <button type="button" class="lbx-btn" data-part="zoom" aria-label={t('lightbox.zoom')} aria-pressed="false" aria-keyshortcuts="Z">
+        <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
+          <circle cx="10.5" cy="10.5" r="6.25" fill="none" stroke="currentColor" stroke-width="1.7"></circle>
+          <path d="m15.2 15.2 4.8 4.8M8 10.5h5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"></path>
+          <path class="lbx-plus" d="M10.5 8v5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"></path>
+        </svg>
+      </button>
+      <button type="button" class="lbx-btn" data-part="close" aria-label={t('lightbox.close')} aria-keyshortcuts="Escape">
+        <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
+          <path d="m6.5 6.5 11 11m0-11-11 11" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"></path>
+        </svg>
+      </button>
+    </div>
+  </div>
+
+  <button type="button" class="lbx-nav lbx-prev" data-part="prev" aria-label={t('lightbox.prev')} aria-keyshortcuts="ArrowLeft">
+    <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true">
+      <path d="m14.5 6-6 6 6 6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path>
+    </svg>
+  </button>
+  <button type="button" class="lbx-nav lbx-next" data-part="next" aria-label={t('lightbox.next')} aria-keyshortcuts="ArrowRight">
+    <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true">
+      <path d="m9.5 6 6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path>
+    </svg>
+  </button>
+
+  <div class="lbx-bar" data-part="bar" aria-live="polite">
+    <p class="lbx-title" data-part="title"></p>
+    <p class="lbx-sub" data-part="sub" hidden></p>
+    <p class="sr-only" data-part="status"></p>
+  </div>
+</div>
+
+<style is:global>
+  /* Markup above is static, but the script toggles classes on it: styles are global, prefixed .lbx. */
+  .lbx {
+    position: fixed;
+    inset: 0;
+    z-index: 90;
+    color: var(--text);
+    overscroll-behavior: contain;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .lbx-backdrop {
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(70% 60% at 50% 45%, color-mix(in oklab, var(--glow) 13%, transparent), transparent 72%),
+      rgb(5 6 7 / 0.94);
+  }
+  .lbx-stage {
+    position: absolute;
+    inset: 0;
+    /* every gesture (swipe, pan, pinch) is handled in JS so pinch zooms the image, not the page */
+    touch-action: none;
+    user-select: none;
+    -webkit-user-select: none;
+  }
+  .lbx-frame {
+    position: absolute;
+    border-radius: 10px;
+    overflow: hidden;
+    background: rgb(255 255 255 / 0.03);
+    transform-origin: 50% 50%;
+    cursor: zoom-in;
+    contain: layout;
+  }
+  .lbx-frame::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.07);
+    pointer-events: none;
+  }
+  .lbx-frame.is-animating {
+    transition: transform 0.42s var(--ease-out-expo);
+  }
+  .lbx-frame.is-zoomed {
+    cursor: grab;
+  }
+  .lbx-frame.is-dragging {
+    cursor: grabbing;
+  }
+  .lbx-ph,
+  .lbx-img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    max-width: none;
+    -webkit-user-drag: none;
+    pointer-events: none;
+  }
+  .lbx-ph {
+    object-fit: cover;
+    filter: blur(6px);
+    transform: scale(1.04);
+  }
+  .lbx-img {
+    object-fit: contain;
+    opacity: 0;
+    transition: opacity 0.3s ease-out;
+  }
+  .lbx-frame.is-loaded .lbx-img {
+    opacity: 1;
+  }
+  .lbx-frame.is-loaded .lbx-ph {
+    visibility: hidden;
+    transition: visibility 0s 0.3s;
+  }
+  .lbx-frame.is-error::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    margin: auto;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    border: 2px solid rgb(255 255 255 / 0.25);
+    background: linear-gradient(45deg, transparent 46%, rgb(255 255 255 / 0.35) 46% 54%, transparent 54%);
+    z-index: 1;
+  }
+  .lbx-spinner {
+    position: absolute;
+    inset: 0;
+    margin: auto;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    border: 2px solid rgb(255 255 255 / 0.14);
+    border-top-color: var(--accent);
+    animation: lbx-spin 0.8s linear infinite;
+    z-index: 1;
+  }
+  @keyframes lbx-spin {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+
+  .lbx-top {
+    position: absolute;
+    inset: 0 0 auto 0;
+    height: calc(4rem + env(safe-area-inset-top));
+    padding: env(safe-area-inset-top) max(1rem, env(safe-area-inset-right)) 0 max(1.25rem, env(safe-area-inset-left));
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    pointer-events: none;
+  }
+  .lbx-top > * {
+    pointer-events: auto;
+  }
+  .lbx-count {
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    letter-spacing: 0.08em;
+    color: var(--text-mute);
+    font-variant-numeric: tabular-nums;
+  }
+  .lbx-count b {
+    color: var(--text);
+    font-weight: 500;
+  }
+  .lbx-actions {
+    display: flex;
+    gap: 0.5rem;
+    margin-left: auto;
+  }
+  .lbx-btn,
+  .lbx-nav {
+    display: grid;
+    place-items: center;
+    width: 2.75rem;
+    height: 2.75rem;
+    border-radius: 999px;
+    color: var(--text);
+    background: rgb(255 255 255 / 0.06);
+    border: 1px solid var(--line-2);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    transition:
+      background-color 0.2s,
+      border-color 0.2s,
+      color 0.2s,
+      transform 0.25s var(--ease-out-expo);
+  }
+  .lbx-btn:hover,
+  .lbx-nav:hover {
+    background: rgb(255 255 255 / 0.12);
+    border-color: rgb(255 255 255 / 0.24);
+  }
+  .lbx-btn:active,
+  .lbx-nav:active {
+    transform: scale(0.93);
+  }
+  .lbx-btn[aria-pressed='true'] {
+    color: var(--accent-ink);
+    background: var(--accent);
+    border-color: var(--accent);
+    box-shadow: 0 0 24px -6px var(--accent);
+  }
+  .lbx-btn[aria-pressed='true'] .lbx-plus {
+    display: none;
+  }
+  .lbx-nav {
+    position: absolute;
+    top: 50%;
+    width: 3.25rem;
+    height: 3.25rem;
+    margin-top: -1.625rem;
+  }
+  .lbx-prev {
+    left: max(1.25rem, env(safe-area-inset-left));
+  }
+  .lbx-next {
+    right: max(1.25rem, env(safe-area-inset-right));
+  }
+  .lbx.is-single .lbx-nav,
+  .lbx.is-single .lbx-count {
+    display: none;
+  }
+
+  .lbx-bar {
+    position: absolute;
+    inset: auto 0 0 0;
+    min-height: 5.25rem;
+    padding: 1rem 1.5rem calc(1.15rem + env(safe-area-inset-bottom));
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 0.3rem;
+    text-align: center;
+    background: linear-gradient(to top, rgb(5 6 7 / 0.9), rgb(5 6 7 / 0));
+  }
+  .lbx-title {
+    max-width: 62ch;
+    font-size: 0.95rem;
+    font-weight: 500;
+    line-height: 1.35;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    overflow: hidden;
+  }
+  .lbx-title:empty {
+    display: none;
+  }
+  .lbx-sub {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.02em;
+    color: var(--text-dim);
+  }
+
+  @media (max-width: 767px) {
+    .lbx-top {
+      height: calc(3.5rem + env(safe-area-inset-top));
+      padding-inline: 0.75rem 0.6rem;
+    }
+    .lbx-nav {
+      top: auto;
+      bottom: calc(1rem + env(safe-area-inset-bottom));
+      width: 2.75rem;
+      height: 2.75rem;
+      margin-top: 0;
+    }
+    .lbx-prev {
+      left: 0.6rem;
+    }
+    .lbx-next {
+      right: 0.6rem;
+    }
+    .lbx-bar {
+      min-height: 4.75rem;
+      padding-inline: 4rem;
+    }
+    .lbx-title {
+      font-size: 0.88rem;
+    }
+  }
+</style>

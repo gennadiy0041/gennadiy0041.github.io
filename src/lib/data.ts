@@ -5,7 +5,7 @@ import {
   GROUP_LABEL,
   LEVEL_LABEL,
   dateKey,
-  fmtDate,
+  fmtAchDate,
   loc,
   localizePath,
   yearOf,
@@ -56,7 +56,7 @@ export async function getStats() {
   const podium = ach.filter((a) => a.data.podium).length;
   const science = ach.filter((a) => groupOf(a) === 'science').length;
   const startup = ach.filter((a) => groupOf(a) === 'startup').length;
-  const docs = ach.filter((a) => a.data.image).length;
+  const docs = ach.filter((a) => a.data.image && a.data.imageKind !== 'photo').length;
   const intl = ach.filter((a) => a.data.level === 'international').length;
   const years = new Set(ach.map((a) => yearOf(a.data.date)));
   return { achievements: ach.length, podium, science, startup, docs, intl, projects: prj.length, years: years.size };
@@ -80,7 +80,7 @@ export async function buildClientIndex(lang: Lang) {
         r: loc(a.data.result, lang),
         i: loc(a.data.issuer, lang),
         e: loc(a.data.event, lang),
-        d: fmtDate(a.data.date, lang),
+        d: fmtAchDate(a.data.date, a.data.dateApprox, lang),
         y: yearOf(a.data.date),
         g,
         gl: loc(GROUP_LABEL[g], lang),

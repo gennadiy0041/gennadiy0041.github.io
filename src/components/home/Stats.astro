@@ -1,0 +1,91 @@
+---
+import SectionHead from '../SectionHead.astro';
+import { getStats } from '../../lib/data';
+import { useT, type Lang } from '../../i18n';
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const t = useT(lang);
+const s = await getStats();
+const ru = lang === 'ru';
+// Only show numbers that are meaningful (> 0); every value is counted from content files.
+const items = [
+  { n: s.podium, label: ru ? 'Призовые места и финалы' : 'Podiums & finals', sub: ru ? 'хакатоны, питчи, конкурсы' : 'hackathons, pitches, contests' },
+  { n: s.projects, label: ru ? 'Проекты' : 'Projects', sub: ru ? 'доведены до защиты или запуска' : 'taken to a defence or launch' },
+  { n: s.science, label: ru ? 'Конференции и публикации' : 'Conferences & papers', sub: ru ? 'доклады и статьи' : 'talks and papers' },
+  { n: s.docs, label: ru ? 'Документы' : 'Documents', sub: ru ? 'дипломы и сертификаты' : 'diplomas & certificates' },
+  { n: s.intl, label: ru ? 'Международные события' : 'International events', sub: ru ? 'конференции, мобильность, конкурсы' : 'conferences, mobility, contests' },
+].filter((i) => i.n > 0).slice(0, 4);
+---
+
+<section id="numbers" class="relative py-24 md:py-32" data-section data-section-label={t('stats.title')} aria-labelledby="numbers-title">
+  <div class="container-x">
+    <SectionHead index="01" eyebrow={t('stats.eyebrow')} title={t('stats.title')} id="numbers-title" />
+    <dl class="stats-grid">
+      {
+        items.map((it, i) => (
+          <div class="stat" data-reveal style={`--d:${i * 0.08}s`}>
+            <dt class="order-2 mt-3 text-[0.98rem] font-medium text-[var(--text)]">{it.label}</dt>
+            <dd class="order-1 stat-num" data-count={it.n}>{it.n}</dd>
+            <dd class="order-3 mt-1 font-mono text-[0.72rem] uppercase tracking-[0.08em] text-[var(--text-mute)]">{it.sub}</dd>
+          </div>
+        ))
+      }
+    </dl>
+  </div>
+</section>
+
+<style>
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    border-top: 1px solid var(--line);
+    border-left: 1px solid var(--line);
+  }
+  @media (min-width: 1024px) {
+    .stats-grid {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+  }
+  .stat {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    padding: clamp(1.2rem, 3vw, 2.2rem);
+    border-right: 1px solid var(--line);
+    border-bottom: 1px solid var(--line);
+    overflow: hidden;
+  }
+  .stat::after {
+    content: '';
+    position: absolute;
+    inset: auto 0 0 0;
+    height: 2px;
+    background: linear-gradient(90deg, var(--accent), transparent);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 1.2s var(--ease-out-expo);
+  }
+  .stat:hover::after {
+    transform: scaleX(1);
+  }
+  .stat-num {
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: clamp(3rem, 7vw, 5.6rem);
+    line-height: 1;
+    letter-spacing: -0.05em;
+    font-variant-numeric: tabular-nums;
+    background: linear-gradient(180deg, #fff 30%, rgb(255 255 255 / 0.45));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  .stat:first-child .stat-num {
+    background: linear-gradient(180deg, var(--color-lime-300), var(--accent) 60%, var(--color-lime-600));
+    -webkit-background-clip: text;
+    background-clip: text;
+  }
+</style>

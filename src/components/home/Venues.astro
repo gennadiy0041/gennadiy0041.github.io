@@ -1,0 +1,116 @@
+---
+/**
+ * A slow marquee of the events, programmes and institutions behind the achievements — the "where" at a glance.
+ * Uses the short `venue` field of achievements (explicit, curated names); static (wrapped) when motion is reduced.
+ */
+import { getAchievements, groupOf } from '../../lib/data';
+import { loc, type Lang } from '../../i18n';
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const LEVEL_RANK: Record<string, number> = { international: 0, national: 1, regional: 2, city: 3, university: 4, online: 5, school: 6, unknown: 3 };
+const ach = (await getAchievements())
+  .filter((a) => loc(a.data.venue, lang))
+  .sort(
+    (a, b) =>
+      Number(groupOf(b) === 'startup') - Number(groupOf(a) === 'startup') ||
+      Number(b.data.featured) - Number(a.data.featured) ||
+      (LEVEL_RANK[a.data.level] ?? 9) - (LEVEL_RANK[b.data.level] ?? 9),
+  );
+const seen = new Set<string>();
+const list: string[] = [];
+for (const a of ach) {
+  const name = loc(a.data.venue, lang);
+  const key = name.toLowerCase();
+  if (!seen.has(key)) {
+    seen.add(key);
+    list.push(name);
+  }
+}
+---
+
+{
+  list.length >= 3 && (
+    <section class="venues" aria-label={lang === 'ru' ? 'Где я участвовал и выступал' : 'Where I have competed and spoken'}>
+      <p class="eyebrow container-x mb-5">{lang === 'ru' ? 'Где я участвовал и выступал' : 'Where I have competed and spoken'}</p>
+      <div class="venues-mask">
+        <ul class="venues-track" role="list">
+          {[0, 1].map((copy) =>
+            list.map((n) => (
+              <li class="venue" aria-hidden={copy === 1 ? 'true' : undefined}>
+                <span>{n}</span>
+                <span class="venue-sep" aria-hidden="true">
+                  ✦
+                </span>
+              </li>
+            )),
+          )}
+        </ul>
+      </div>
+    </section>
+  )
+}
+
+<style>
+  .venues {
+    padding-block: 2.5rem 1rem;
+    border-block: 1px solid var(--line);
+    background: linear-gradient(180deg, rgb(255 255 255 / 0.012), transparent);
+  }
+  .venues-mask {
+    overflow: hidden;
+    mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+    padding-bottom: 1.5rem;
+  }
+  .venues-track {
+    display: flex;
+    width: max-content;
+    animation: venues 70s linear infinite;
+  }
+  .venues:hover .venues-track {
+    animation-play-state: paused;
+  }
+  .venue {
+    display: inline-flex;
+    align-items: center;
+    gap: 2rem;
+    padding-right: 2rem;
+    font-family: var(--font-display);
+    font-weight: 500;
+    font-size: clamp(1.1rem, 2.2vw, 1.7rem);
+    letter-spacing: -0.02em;
+    white-space: nowrap;
+    color: var(--text-dim);
+    transition: color 0.3s;
+  }
+  .venue:hover {
+    color: var(--text);
+  }
+  .venue-sep {
+    font-size: 0.8em;
+    color: var(--accent);
+  }
+  @keyframes venues {
+    to {
+      transform: translateX(-50%);
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .venues-track {
+      flex-wrap: wrap;
+      width: auto;
+      padding-inline: clamp(1.1rem, 4vw, 2.5rem);
+      animation: none;
+      row-gap: 0.6rem;
+    }
+    .venue[aria-hidden='true'] {
+      display: none;
+    }
+    .venue {
+      white-space: normal;
+      font-size: clamp(1rem, 4.2vw, 1.4rem);
+    }
+  }
+</style>
