@@ -1,0 +1,43 @@
+---
+name: "Melting Point"
+tagline: { ru: "Комплект команды «Точка плавления» к турниру Smart Eco Fire: эмблема, визитка и ролик о том, почему пластик нельзя жечь", en: "The Melting Point team's kit for the Smart Eco Fire tournament: an emblem, a stage intro and a video against burning plastic" }
+event: { ru: "Турнир Smart Eco Fire, Кокшетау", en: "Smart Eco Fire tournament, Kokshetau" }
+date: 2026-10-28
+period: { ru: "", en: "" }
+status: { ru: "Комплект к турниру готов", en: "Tournament kit ready" }
+result: { ru: "", en: "" }
+team: { ru: "Капитан команды из 5 человек от кафедры «Экология, БЖиЗОС» КУ им. А. Мырзахметова", en: "Captain of a five-person team from the Department of Ecology, Life Safety and Environmental Protection, Myrzakhmetov University" }
+problem: { ru: "Первый интеллектуальный турнир Smart Eco Fire в Академии гражданской защиты им. М. Габдуллина МЧС РК по программе включал пять туров для четырёх команд по пять человек. От каждой команды требовались название, девиз, эмблема и визитка, а домашним заданием был социальный ролик до 60 секунд о проблеме экологии, пожарной безопасности или гражданской защиты: показать проблему и её последствия, предложить решение и закончить призывом. Команда выбрала сжигание пластика на свалках: по данным МЧС РК, с начала 2026 года на мусорных полигонах Казахстана произошло 175 пожаров и возгораний.", en: "The first Smart Eco Fire intellectual tournament at the M. Gabdullin Academy of Civil Protection was planned as five rounds for four teams of five. Each team needed a name, a motto, an emblem and a stage introduction, and the homework was a social video of up to 60 seconds on an ecology, fire-safety or civil-protection problem: show the problem and its consequences, offer a solution and end with a call to action. The team chose the burning of plastic at landfills: according to Kazakhstan's Ministry of Emergency Situations, the country's landfills had seen 175 fires since the start of 2026." }
+did:
+  ru: |
+    - К турниру подготовлен комплект: эмблема для печати на A4 (светлая и тёмная), для экрана 1920×1080 и на прозрачном фоне, сценарий визитки на пятерых, видео-визитка на 54 секунды, социальный ролик «Не в дым — а в дело» на 58 секунд при лимите 60 и именные бейджи 90×110 мм.
+    - Название и образ команды построены на точке плавления: при 80 °C ПЭТ-бутылка теряет форму, около 130 °C плавится полиэтилен, около 160 °C — полипропилен, около 260 °C — сам ПЭТ, и в этой точке пластик либо переплавляют в новую вещь, либо он уходит в огонь и дым. Эмблема — шестигранник с кольцом, бензольное кольцо из молекулы ПЭТ: его нижний угол плавится и стекает каплей, рядом шкала 80–260 °C.
+    - В сценарии визитки (≈1:40, 15 реплик на пятерых) четыре реплики — его: он открывает выступление, представляет жюри команду кафедры и себя как капитана, переводит рассказ от температур плавления к дыму — угарному газу, хлороводороду, диоксинам и 175 пожарам на полигонах, — говорит «И эта точка — мы» и подводит команду к девизу, а в финале поднимает бутылку над головой.
+    - Социальный ролик выстроен по требованиям тура: проблема — 175 пожаров на полигонах и полигон в Алатау, который горел восемь суток; последствия — диоксины, угарный газ и хлороводород в дыме; решение — сдавать пластик в пункт приёма, ведь при 260 °C ПЭТ становится сырьём для волокна, плёнки и новой тары; и призыв «Не жги. Сдай. Не в дым — а в дело».
+    - В листе озвучки ролика он указан чтецом: 18 реплик с таймкодами от 0:01 до 0:53 и указание читать «спокойно, низко, без пафоса».
+  en: |
+    - A kit was prepared for the tournament: the emblem for A4 print (light and dark), for a 1920×1080 screen and on a transparent background, a stage script for five, a 54-second intro video, the 58-second social video ‘Not up in smoke, but put to use’ (the limit was 60 seconds) and 90×110 mm name badges.
+    - The team's name, Tochka Plavleniya, means ‘melting point’, and its whole image is built on it: a PET bottle loses its shape at 80 °C, polyethylene melts at about 130 °C, polypropylene at about 160 °C and PET itself at about 260 °C, the point where plastic is either remelted into something new or goes up in smoke. The emblem is a hexagon with a ring inside, the benzene ring of the PET molecule; its bottom corner melts into a drop, beside an 80–260 °C scale.
+    - Four of the 15 lines in the stage script (about 1:40, for five people) are his: he opens the performance, introduces the department's team and himself as captain to the jury, turns the story from melting points to smoke (carbon monoxide, hydrogen chloride, dioxins and 175 landfill fires), says ‘And that point is us’ and leads the team into the motto; at the end he raises the bottle above his head.
+    - The social video follows the round's brief: the problem is 175 landfill fires and a landfill in Alatau that burned for eight days; the consequences are the dioxins, carbon monoxide and hydrogen chloride in the smoke; the solution is to hand plastic in at a collection point, since at 260 °C PET becomes raw material for fibre, film and new packaging; and the call is ‘Don't burn it. Hand it in. Not up in smoke, but put to use.’
+    - The video's voice-over sheet names him as the narrator: 18 lines timed from 0:01 to 0:53, to be read ‘calm, low, no theatrics’.
+outcome: { ru: "К турниру 28 октября 2026 года комплект был готов целиком: эмблема для печати и экрана, сценарий визитки, видео-визитка, социальный ролик на 58 секунд при лимите 60 и бейджи на всех пятерых. Команда кафедры значится в программе турнира среди четырёх участников. Итог турнира для команды — место и награды — в документах пока не зафиксирован.", en: "By the tournament on 28 October 2026 the whole kit was ready: the emblem for print and screen, the stage script, the intro video, the 58-second social video (the limit was 60) and badges for all five team members. The department's team is listed among the four participants in the tournament programme. The team's result at the tournament, a placing or awards, is not on record yet." }
+stack: []
+metrics:
+  - { value: "175", label: { ru: "пожаров и возгораний на полигонах Казахстана с начала 2026 года (МЧС РК) — цифра, на которой построены визитка и ролик", en: "landfill fires in Kazakhstan since the start of 2026 (Ministry of Emergency Situations): the figure behind the stage intro and the video" } }
+  - { value: "80–260 °C", label: { ru: "шкала эмблемы — от размягчения ПЭТ-бутылки до плавления ПЭТ", en: "the emblem's scale, from a PET bottle softening to PET melting" } }
+  - { value: "≈ 1:40", label: { ru: "визитка на пятерых: 15 реплик, 4 из них — его", en: "stage intro for five: 15 lines, 4 of them his" } }
+  - { value: "58/60", label: { ru: "секунд — социальный ролик при лимите тура", en: "seconds: the social video against the round's limit" } }
+links: []
+cover: ./media/smart-eco-fire-tochka-plavleniya/cover.webp
+coverAlt: { ru: "Экранная эмблема команды «Точка плавления»: шестигранник с кольцом, нижний угол плавится и стекает оранжевой каплей, рядом шкала 80–260° и девиз «Не в дым — а в дело»; внизу логотип и кафедра КУ им. А. Мырзахметова и подпись «Smart Eco Fire · 2026»", en: "The Melting Point team's screen emblem (in Russian): a hexagon with a ring inside, its bottom corner melting into an orange drop, an 80–260° scale and the motto ‘Not up in smoke, but put to use’; below, the Myrzakhmetov University logo and department and ‘Smart Eco Fire · 2026’" }
+gallery:
+  - { src: ./media/smart-eco-fire-tochka-plavleniya/1.webp, caption: { ru: "Кадр социального ролика: 175 пожаров и возгораний на мусорных полигонах Казахстана с начала 2026 года", en: "Social video frame: 175 fires at Kazakhstan's landfills since the start of 2026" } }
+  - { src: ./media/smart-eco-fire-tochka-plavleniya/2.webp, caption: { ru: "Кадр ролика: горящий пластик — это диоксины, угарный газ и хлороводород; источник в ролике — ВОЗ", en: "Video frame: burning plastic means dioxins, carbon monoxide and hydrogen chloride; the video cites the WHO" } }
+  - { src: ./media/smart-eco-fire-tochka-plavleniya/3.webp, caption: { ru: "Кадр ролика: при 260 °C ПЭТ плавится и становится сырьём для волокна, плёнки и новой тары", en: "Video frame: at 260 °C PET melts and becomes raw material for fibre, film and new packaging" } }
+  - { src: ./media/smart-eco-fire-tochka-plavleniya/4.webp, caption: { ru: "Лист озвучки ролика, где он указан чтецом: первые 9 из 18 реплик с таймкодами", en: "The video's voice-over sheet, which names him as the narrator: the first 9 of 18 timed lines" } }
+size: sm
+order: 11
+featured: false
+achievements: []
+---

@@ -4,6 +4,7 @@ import sitemap from '@astrojs/sitemap';
 import tailwindcss from '@tailwindcss/vite';
 
 // Kazakh needs cyrillic-ext (ә ғ қ ң ө ұ ү һ) on top of basic cyrillic (і).
+/** @type {[string, ...string[]]} */
 const subsets = ['latin', 'latin-ext', 'cyrillic', 'cyrillic-ext'];
 
 export default defineConfig({

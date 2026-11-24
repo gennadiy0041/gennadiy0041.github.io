@@ -768,6 +768,18 @@
         }
       ]
     },
+    "5fc6153c8c480d80926b47f6072087b2827fe4a5c0aa9a8e88ded6a3f301cfda": {
+      "ext": "pdf",
+      "pages": 1,
+      "firstSeen": "2026-11-24",
+      "items": [
+        {
+          "pages": "all",
+          "status": "entry",
+          "entry": "2026-finiq-financial-security-dictation"
+        }
+      ]
+    },
     "625c7f1af694a0b09b44e7e81b37db99401d83fe533f9434ecd1a8d920a94081": {
       "ext": "jpg",
       "pages": 1,

@@ -4,7 +4,7 @@ tagline: { ru: "Обзор ИИ-видеообнаружения пожаров:
 event: { ru: "К XVII МНПК по пожарной безопасности, Кокшетау", en: "For the 17th international fire safety conference, Kokshetau" }
 date: 2026-10
 period: { ru: "", en: "" }
-status: { ru: "Тезисы и доклад готовы", en: "Paper and talk ready" }
+status: { ru: "Тезисы и доклад подготовлены", en: "Paper and talk prepared" }
 result: { ru: "", en: "" }
 team: { ru: "Соло, под научным руководством", en: "Solo, under academic supervision" }
 problem: { ru: "Камеры с компьютерным зрением могут замечать огонь и дым раньше точечных извещателей — в больших помещениях и на открытых территориях. Но высокие цифры из статей не всегда переносятся на реальные объекты, а результаты разных работ трудно сравнивать. Цель обзора — по проверяемым публикациям сопоставить подходы, критерии их оценки и факторы, которые ограничивают применение; работа опирается только на опубликованные результаты, без собственных экспериментов.", en: "Cameras with computer vision can catch flame and smoke earlier than point smoke and heat detectors in large spaces and outdoors. But the high scores reported in papers do not always hold on real sites, and results from different studies are hard to compare. The review sets out to compare, from verifiable publications, the approaches, the criteria used to evaluate them and the factors that limit their use; it relies only on published results, with no experiments of its own." }
@@ -29,7 +29,7 @@ metrics:
   - { value: "13", label: { ru: "проверяемых источников 2006–2024 годов, включая стандарт ISO", en: "verifiable sources from 2006–2024, including an ISO standard" } }
   - { value: "7", label: { ru: "подходов в сравнительной таблице — от цветовой модели до SmokeyNet", en: "approaches in the comparison table, from a colour model to SmokeyNet" } }
   - { value: "1/17", label: { ru: "одна ошибка на 17 роликах без огня меняет долю ложных срабатываний на 5,88 п. п.", en: "one error across 17 fire-free videos changes the false-positive rate by 5.88 points" } }
-  - { value: "≤ 216", label: { ru: "ложных тревог в сутки на камеру при 0,01 % ложных срабатываний на кадр (оценка)", en: "false alarms per camera per day at a 0.01% per-frame false-positive rate (estimate)" } }
+  - { value: "≤ 216", label: { ru: "ложных тревог в сутки на одну камеру 25 кадр/с при 0,01 % ложных срабатываний на кадр (оценка)", en: "false alarms per day from one 25 fps camera at a 0.01% per-frame false-positive rate (estimate)" } }
 links:
   - { label: { ru: "Страница конференции на сайте Академии гражданской защиты", en: "Conference page on the Academy of Civil Protection website (in Russian)" }, url: "https://agz.edu.kz/ezjegodnaa_mezjdynarodnaa_naychno_prakticheskaa_konferencia_aktyalnie_problemi_pozjarnoj_bezopasnosti__predyprezjdenia_i_likvidacii_chrezvichajnix_sityacij.html", kind: event }
 cover: ./media/fire-ai-detection-review/cover.webp

@@ -237,48 +237,30 @@ export function initTyped() {
 }
 
 /* --------------------------------------------------------------- Hero GL */
-/** Software rasterisers (SwiftShader, llvmpipe — VMs, GPU-less machines, headless audits) can't run a full-screen shader smoothly. */
-let hwGL: boolean | null = null;
-function hasHardwareGL(): boolean {
-  if (hwGL !== null) return hwGL;
-  try {
-    const c = document.createElement('canvas');
-    const gl = (c.getContext('webgl2') || c.getContext('webgl')) as WebGLRenderingContext | null;
-    if (!gl) return (hwGL = false);
-    const ext = gl.getExtension('WEBGL_debug_renderer_info');
-    const renderer = String(ext ? gl.getParameter(ext.UNMASKED_RENDERER_WEBGL) : gl.getParameter(gl.RENDERER));
-    gl.getExtension('WEBGL_lose_context')?.loseContext();
-    hwGL = !/swiftshader|llvmpipe|softpipe|software|basic render|mesa offscreen/i.test(renderer);
-  } catch {
-    hwGL = false;
-  }
-  return hwGL;
-}
-const glModules = import.meta.glob<{ mountHeroGL: (c: HTMLCanvasElement) => { destroy(): void } }>('./hero-gl.ts');
+const glModules = import.meta.glob<{ mountHeroGL: (c: HTMLCanvasElement) => Promise<{ destroy(): void }> }>('./hero-gl.ts');
+/**
+ * Called by app.ts on the first mouse movement, never inside the page-load task. The canvas fades in over the
+ * poster once the module marks it data-hero-gl="ready" (Hero.astro); on software GL the module does nothing.
+ */
 export function initHeroGL() {
   const canvas = document.querySelector<HTMLCanvasElement>('[data-hero-gl]');
   const load = glModules['./hero-gl.ts'];
-  if (!canvas || !load || !isRich() || !hasHardwareGL()) return;
+  if (!canvas || !load || !isRich() || canvas.dataset.heroGl) return;
   let handle: { destroy(): void } | null = null;
   let cancelled = false;
-  const start = () => {
-    load()
-      .then((m) => {
-        if (cancelled) return;
-        handle = m.mountHeroGL(canvas);
-        requestAnimationFrame(() => html.classList.add('gl-on'));
-      })
-      .catch(() => {
-        /* WebGL unavailable: the static poster stays */
-      });
-  };
-  const idle = (window as Window & { requestIdleCallback?: (cb: () => void, o?: { timeout: number }) => number }).requestIdleCallback;
-  if (idle) idle(start, { timeout: 1500 });
-  else setTimeout(start, 400);
+  load()
+    .then((m) => (cancelled ? null : m.mountHeroGL(canvas)))
+    .then((mounted) => {
+      if (!mounted) return;
+      if (cancelled) mounted.destroy();
+      else handle = mounted;
+    })
+    .catch(() => {
+      /* WebGL unavailable: the static poster stays */
+    });
   onCleanup(() => {
     cancelled = true;
     handle?.destroy();
-    html.classList.remove('gl-on');
   });
 }
 

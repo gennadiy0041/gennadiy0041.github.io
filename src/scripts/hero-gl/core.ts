@@ -1,8 +1,12 @@
 /**
- * Low-level renderer for the hero terrain shader: one OGL Program on one full-screen Triangle.
- * Shared by the live background (../hero-gl.ts) and the poster bake (scripts/render-hero-poster.mjs).
+ * Low-level renderer for the hero terrain shader: one program drawing one full-screen triangle, in plain WebGL2
+ * (no engine, a few kB). Shared by the live background (../hero-gl.ts) and the poster bake
+ * (src/pages/dev-poster.astro, driven by .private/tools/bake-poster.mjs).
+ *
+ * The program links with KHR_parallel_shader_compile when the browser has it: the GPU process compiles on its
+ * own thread while this module polls COMPLETION_STATUS_KHR once per frame, so the page's main thread never waits
+ * for the shader compiler (on Windows/ANGLE a full-screen fragment shader can take a few hundred ms).
  */
-import { Program, Renderer, Triangle } from 'ogl';
 import { fragment, vertex } from './shaders';
 
 /** sRGB colour, each channel 0..1. */
@@ -59,64 +63,101 @@ export interface HeroCore {
   dispose(): void;
 }
 
-/** Throws if WebGL2 is unavailable or the shader fails to link. */
-export function createHeroCore(canvas: HTMLCanvasElement, look: HeroLook, dpr: number): HeroCore {
-  // OGL's Renderer writes px sizes into canvas.style; the page CSS must stay in charge of the element box.
-  const { width: styleWidth, height: styleHeight } = canvas.style;
-  const renderer = new Renderer({ canvas, dpr, webgl: 2, ...CONTEXT_ATTRIBUTES });
-  canvas.style.width = styleWidth;
-  canvas.style.height = styleHeight;
+const nextFrame = () => new Promise<void>((resolve) => requestAnimationFrame(() => resolve()));
 
-  const gl = renderer.gl;
-  if (!renderer.isWebgl2) throw new Error('WebGL2 is not available');
-
-  const resolution = [1, 1];
-  const pointer = [0.5, 0.5, 0, 0];
-  const uniforms = {
-    uResolution: { value: resolution },
-    uPixel: { value: 1 },
-    uTime: { value: 0 },
-    uPointer: { value: pointer },
-    uAccent: { value: look.accent },
-    uGlow: { value: look.glow },
-    uIntensity: { value: look.intensity },
-  };
-  const program = new Program(gl, { vertex, fragment, uniforms, depthTest: false, depthWrite: false, cullFace: false });
-  if (!gl.getProgramParameter(program.program, gl.LINK_STATUS)) {
-    throw new Error(`hero shader failed to link: ${gl.getProgramInfoLog(program.program) ?? 'context lost'}`);
+/** Compile and link without blocking: the first status query waits until the parallel compile has finished. */
+async function linkProgram(gl: WebGL2RenderingContext): Promise<{ program: WebGLProgram; shaders: WebGLShader[] }> {
+  const shaders = ([
+    [gl.VERTEX_SHADER, vertex],
+    [gl.FRAGMENT_SHADER, fragment],
+  ] as const).map(([type, source]) => {
+    const shader = gl.createShader(type);
+    if (!shader) throw new Error('hero shader: no shader object (context lost?)');
+    gl.shaderSource(shader, source);
+    gl.compileShader(shader);
+    return shader;
+  });
+  const program = gl.createProgram();
+  if (!program) throw new Error('hero shader: no program object (context lost?)');
+  for (const shader of shaders) gl.attachShader(program, shader);
+  gl.bindAttribLocation(program, 0, 'position');
+  gl.linkProgram(program);
+  const parallel = gl.getExtension('KHR_parallel_shader_compile');
+  if (parallel) {
+    while (!gl.getProgramParameter(program, parallel.COMPLETION_STATUS_KHR)) {
+      if (gl.isContextLost()) throw new Error('hero shader: context lost while compiling');
+      await nextFrame();
+    }
   }
-  const geometry = new Triangle(gl);
+  if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {
+    const log = [gl.getProgramInfoLog(program), ...shaders.map((shader) => gl.getShaderInfoLog(shader))].filter(Boolean).join(' | ');
+    throw new Error(`hero shader failed to link: ${log || 'context lost'}`);
+  }
+  return { program, shaders };
+}
+
+/** Rejects if WebGL2 is unavailable or the shader fails to link. */
+export async function createHeroCore(canvas: HTMLCanvasElement, look: HeroLook): Promise<HeroCore> {
+  const gl = canvas.getContext('webgl2', CONTEXT_ATTRIBUTES) as WebGL2RenderingContext | null;
+  if (!gl || gl.isContextLost()) throw new Error('WebGL2 is not available');
+  const { program, shaders } = await linkProgram(gl);
+
+  const at = (name: string) => gl.getUniformLocation(program, name);
+  const uniform = {
+    resolution: at('uResolution'),
+    pixel: at('uPixel'),
+    time: at('uTime'),
+    pointer: at('uPointer'),
+  };
+  // full-screen triangle: (-1,-1) (3,-1) (-1,3) covers the viewport, the fragment shader works in gl_FragCoord space
+  const buffer = gl.createBuffer();
+  const vao = gl.createVertexArray();
+  gl.bindVertexArray(vao);
+  gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
+  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 3, -1, -1, 3]), gl.STATIC_DRAW);
+  gl.enableVertexAttribArray(0);
+  gl.vertexAttribPointer(0, 2, gl.FLOAT, false, 0, 0);
+  gl.bindVertexArray(null);
+  // no blending and every pixel is covered, so no clear is needed
+  gl.disable(gl.BLEND);
+  gl.disable(gl.DEPTH_TEST);
+  gl.disable(gl.CULL_FACE);
+  gl.useProgram(program);
+  gl.uniform3fv(at('uAccent'), look.accent);
+  gl.uniform3fv(at('uGlow'), look.glow);
+  gl.uniform1f(at('uIntensity'), look.intensity);
+
+  let width = Math.max(1, canvas.width);
+  let height = Math.max(1, canvas.height);
 
   return {
-    gl: gl as WebGL2RenderingContext,
+    gl,
 
     resize(cssWidth, cssHeight, pixelRatio) {
-      const width = Math.max(1, Math.round(cssWidth * pixelRatio));
-      const height = Math.max(1, Math.round(cssHeight * pixelRatio));
+      width = Math.max(1, Math.round(cssWidth * pixelRatio));
+      height = Math.max(1, Math.round(cssHeight * pixelRatio));
       if (canvas.width !== width) canvas.width = width;
       if (canvas.height !== height) canvas.height = height;
-      renderer.setViewport(width, height);
-      resolution[0] = width;
-      resolution[1] = height;
-      uniforms.uPixel.value = pixelRatio;
+      gl.useProgram(program);
+      gl.uniform2f(uniform.resolution, width, height);
+      gl.uniform1f(uniform.pixel, pixelRatio);
     },
 
     draw(frame) {
-      uniforms.uTime.value = frame.time;
-      pointer[0] = frame.pointerX;
-      pointer[1] = 1 - frame.pointerY; // GL's y axis points up
-      pointer[2] = frame.hover;
-      pointer[3] = frame.bloom;
-      // No blending and every pixel is covered, so no clear is needed.
-      program.use();
-      geometry.draw({ program });
+      gl.viewport(0, 0, width, height);
+      gl.useProgram(program);
+      gl.uniform1f(uniform.time, frame.time);
+      gl.uniform4f(uniform.pointer, frame.pointerX, 1 - frame.pointerY, frame.hover, frame.bloom); // GL's y axis points up
+      gl.bindVertexArray(vao);
+      gl.drawArrays(gl.TRIANGLES, 0, 3);
+      gl.bindVertexArray(null);
     },
 
     dispose() {
-      geometry.remove();
-      program.remove();
-      gl.deleteShader(program.vertexShader);
-      gl.deleteShader(program.fragmentShader);
+      gl.deleteVertexArray(vao);
+      gl.deleteBuffer(buffer);
+      gl.deleteProgram(program);
+      for (const shader of shaders) gl.deleteShader(shader);
     },
   };
 }

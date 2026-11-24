@@ -1,14 +1,14 @@
 /**
  * Live WebGL background of the hero: an animated topographic map whose contours ring around the cursor.
  *
- * Mount it only on the rich (desktop, motion-allowed) tier, after first paint:
+ * app.ts mounts it on the rich tier (desktop, motion allowed) on the first mouse movement, never during page load:
  *   const { mountHeroGL } = await import('../scripts/hero-gl');
- *   const hero = mountHeroGL(canvas);   // later: hero.destroy()
+ *   const hero = await mountHeroGL(canvas);   // later: hero.destroy()
  *
  * The canvas must be sized by CSS (e.g. `position:absolute; inset:0; width:100%; height:100%;
  * pointer-events:none`); the module only sets its drawing-buffer size. While it renders, the canvas
- * carries data-hero-gl="ready" ("lost" while the GPU context is gone) so CSS can fade it in over the poster.
- * Without WebGL2 nothing happens and the returned handle is a no-op.
+ * carries data-hero-gl="ready" ("lost" while the GPU context is gone) so CSS can fade it in over the poster,
+ * a still of POSTER_FRAME. Without hardware WebGL2 nothing happens and the returned handle is a no-op.
  */
 import {
   CONTEXT_ATTRIBUTES,
@@ -54,24 +54,34 @@ const REST_BLOOM = 0.45;
 const MOVING_MS = 350;
 
 const NOOP: HeroGLHandle = { destroy() {} };
+/** Software rasterisers (SwiftShader, llvmpipe — VMs, GPU-less machines, headless audits) can't run a full-screen shader smoothly. */
+const SOFTWARE_GL = /swiftshader|llvmpipe|softpipe|software|basic render|mesa offscreen/i;
+let softwareGL = false;
 
 const clamp = (value: number, min: number, max: number) => Math.min(max, Math.max(min, value));
 
-export function mountHeroGL(canvas: HTMLCanvasElement, opts: HeroGLOptions = {}): HeroGLHandle {
+export async function mountHeroGL(canvas: HTMLCanvasElement, opts: HeroGLOptions = {}): Promise<HeroGLHandle> {
+  if (softwareGL) return NOOP;
   const look: HeroLook = {
     accent: opts.accent ?? DEFAULT_LOOK.accent,
     glow: opts.glow ?? DEFAULT_LOOK.glow,
     intensity: Number.isFinite(opts.intensity) ? clamp(opts.intensity as number, 0, 2) : DEFAULT_LOOK.intensity,
   };
 
-  // Claim the context with the final attributes (OGL reuses it); no WebGL2 -> keep the static fallback.
-  const probe = canvas.getContext('webgl2', CONTEXT_ATTRIBUTES);
+  // Claim the context with the final attributes (the core reuses it); no WebGL2 -> keep the static poster.
+  const probe = canvas.getContext('webgl2', CONTEXT_ATTRIBUTES) as WebGL2RenderingContext | null;
   if (!probe || probe.isContextLost()) return NOOP;
+  const info = probe.getExtension('WEBGL_debug_renderer_info');
+  if (SOFTWARE_GL.test(String(info ? probe.getParameter(info.UNMASKED_RENDERER_WEBGL) : probe.getParameter(probe.RENDERER)))) {
+    softwareGL = true;
+    probe.getExtension('WEBGL_lose_context')?.loseContext();
+    return NOOP;
+  }
 
   const dpr = () => Math.min(window.devicePixelRatio || 1, MAX_DPR);
   let core: HeroCore;
   try {
-    core = createHeroCore(canvas, look, dpr());
+    core = await createHeroCore(canvas, look);
   } catch (error) {
     console.warn('[hero-gl]', error);
     probe.getExtension('WEBGL_lose_context')?.loseContext();
@@ -195,17 +205,18 @@ export function mountHeroGL(canvas: HTMLCanvasElement, opts: HeroGLOptions = {})
     sync();
   };
   const onContextRestored = () => {
-    try {
-      core = createHeroCore(canvas, look, dpr());
-      lost = false;
-      if (cssWidth && cssHeight) {
-        resize();
-        render();
-      }
-    } catch (error) {
-      console.warn('[hero-gl]', error);
-    }
-    sync();
+    createHeroCore(canvas, look)
+      .then((restored) => {
+        if (destroyed) return restored.dispose();
+        core = restored;
+        lost = false;
+        if (cssWidth && cssHeight) {
+          resize();
+          render();
+        }
+        sync();
+      })
+      .catch((error) => console.warn('[hero-gl]', error));
   };
 
   resizeObserver.observe(canvas);

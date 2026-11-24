@@ -1,17 +1,21 @@
 /**
- * Rich motion — loaded only when <html> has class "rich" (desktop, fine pointer, no reduced motion):
- * Lenis smooth scroll, GSAP SplitText headings, scrubbed timeline line, 3D tilt, spotlight, magnetic buttons, hero intro.
- * Phones and reduced-motion users never download this module (see app.ts).
+ * Rich motion — loaded only when <html> has class "rich" (desktop, fine pointer, no reduced motion), on the
+ * visitor's first input or once the page has settled (see app.ts): Lenis smooth scroll, GSAP SplitText headings,
+ * scrubbed timeline line, 3D tilt, spotlight, magnetic buttons. The hero entrance is CSS (Hero.astro), so first
+ * paint never waits for this module. Phones and reduced-motion users never download it.
  */
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { SplitText } from 'gsap/SplitText';
 import Lenis from 'lenis';
+import { nextTask, whenIdle } from './idle';
 import { isRich } from './scroll';
 
 gsap.registerPlugin(ScrollTrigger, SplitText);
 
 let lenis: Lenis | null = null;
+/** Bumped by destroyMotion(): an init still in progress for the previous page stops at its next step. */
+let generation = 0;
 const cleanups: Array<() => void> = [];
 const onCleanup = (fn: () => void) => cleanups.push(fn);
 
@@ -68,23 +72,33 @@ function initTimelineLine() {
   });
 }
 
+/** Tilt / magnetic tweens are created on the first hover of each element: no upfront style work. */
 function initPointerFx() {
   document.querySelectorAll<HTMLElement>('[data-tilt]').forEach((el) => {
     const max = el.dataset.tilt === 'soft' ? 4 : 7;
-    gsap.set(el, { transformPerspective: 1000, transformStyle: 'preserve-3d' });
-    const rx = gsap.quickTo(el, 'rotationX', { duration: 0.6, ease: 'power3.out' });
-    const ry = gsap.quickTo(el, 'rotationY', { duration: 0.6, ease: 'power3.out' });
+    let rx: gsap.QuickToFunc | null = null;
+    let ry: gsap.QuickToFunc | null = null;
     let rect: DOMRect | null = null;
-    const enter = () => (rect = el.getBoundingClientRect());
+    const setup = () => {
+      if (rx) return;
+      gsap.set(el, { transformPerspective: 1000, transformStyle: 'preserve-3d' });
+      rx = gsap.quickTo(el, 'rotationX', { duration: 0.6, ease: 'power3.out' });
+      ry = gsap.quickTo(el, 'rotationY', { duration: 0.6, ease: 'power3.out' });
+    };
+    const enter = () => {
+      setup();
+      rect = el.getBoundingClientRect();
+    };
     const move = (e: PointerEvent) => {
+      setup();
       const r = rect ?? (rect = el.getBoundingClientRect());
-      rx(-((e.clientY - r.top) / r.height - 0.5) * max);
-      ry(((e.clientX - r.left) / r.width - 0.5) * max);
+      rx!(-((e.clientY - r.top) / r.height - 0.5) * max);
+      ry!(((e.clientX - r.left) / r.width - 0.5) * max);
     };
     const leave = () => {
       rect = null;
-      rx(0);
-      ry(0);
+      rx?.(0);
+      ry?.(0);
     };
     el.addEventListener('pointerenter', enter);
     el.addEventListener('pointermove', move);
@@ -93,7 +107,7 @@ function initPointerFx() {
       el.removeEventListener('pointerenter', enter);
       el.removeEventListener('pointermove', move);
       el.removeEventListener('pointerleave', leave);
-      gsap.set(el, { clearProps: 'transform,transformPerspective,transformStyle' });
+      if (rx) gsap.set(el, { clearProps: 'transform,transformPerspective,transformStyle' });
     });
   });
 
@@ -108,49 +122,48 @@ function initPointerFx() {
   });
 
   document.querySelectorAll<HTMLElement>('[data-magnetic]').forEach((el) => {
-    const x = gsap.quickTo(el, 'x', { duration: 0.5, ease: 'power3.out' });
-    const y = gsap.quickTo(el, 'y', { duration: 0.5, ease: 'power3.out' });
+    let x: gsap.QuickToFunc | null = null;
+    let y: gsap.QuickToFunc | null = null;
     const move = (e: PointerEvent) => {
+      x ??= gsap.quickTo(el, 'x', { duration: 0.5, ease: 'power3.out' });
+      y ??= gsap.quickTo(el, 'y', { duration: 0.5, ease: 'power3.out' });
       const r = el.getBoundingClientRect();
       x((e.clientX - (r.left + r.width / 2)) * 0.18);
       y((e.clientY - (r.top + r.height / 2)) * 0.28);
     };
     const leave = () => {
-      x(0);
-      y(0);
+      x?.(0);
+      y?.(0);
     };
     el.addEventListener('pointermove', move);
     el.addEventListener('pointerleave', leave);
     onCleanup(() => {
       el.removeEventListener('pointermove', move);
       el.removeEventListener('pointerleave', leave);
+      if (x) gsap.set(el, { clearProps: 'x,y' });
     });
   });
 }
 
-/** Transform-only entrance so the LCP element (name / first photo) is painted on the first frame. */
-function initHeroIntro() {
-  if (!document.querySelector('.hero') || scrollY > 40) return;
-  const tl = gsap.timeline({ defaults: { ease: 'expo.out' } });
-  tl.from('[data-hero-name] > span', { yPercent: 16, duration: 1.4, stagger: 0.09 }, 0)
-    .from('[data-hero-in]', { y: 20, duration: 1.1, stagger: 0.07 }, 0.1)
-    .from('[data-hero-photo]', { y: 60, rotation: (i: number) => [6, -10, 14][i] ?? 0, duration: 1.6, stagger: 0.1 }, 0.05);
-  onCleanup(() => tl.kill());
-}
-
-export function initMotion() {
+/** Each step runs in its own task, so starting motion never blocks input for long. */
+export async function initMotion() {
   if (!isRich()) return;
+  const gen = generation;
   ensureLenis();
   lenis!.resize();
   lenis!.start();
-  initHeroIntro();
+  await nextTask();
+  if (gen !== generation) return;
   initSplits();
   initTimelineLine();
+  await nextTask();
+  if (gen !== generation) return;
   initPointerFx();
-  requestAnimationFrame(() => ScrollTrigger.refresh());
+  whenIdle(() => gen === generation && ScrollTrigger.refresh());
 }
 
 export function destroyMotion() {
+  generation++;
   while (cleanups.length) {
     try {
       cleanups.pop()!();

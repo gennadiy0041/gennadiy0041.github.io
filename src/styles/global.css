@@ -105,14 +105,16 @@
    Atmosphere: grain, grid, glow
    --------------------------------------------------------------- */
 @layer components {
+  /* Film grain: a 7 kB noise tile (public/noise.png, white specks at 0–5 % alpha) over the viewport.
+     Normal blending on purpose: a blend mode here makes the GPU push the whole page through an extra
+     compositing pass (it cost ~0.2 s before first paint on a cold browser profile). */
   .grain {
     position: fixed;
-    inset: -50%;
+    inset: 0;
     z-index: 60;
     pointer-events: none;
-    opacity: 0.07;
-    mix-blend-mode: overlay;
-    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='240' height='240'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 1.1 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+    background-image: url('/noise.png');
+    background-size: 128px 128px;
   }
 
   .grid-bg {
@@ -125,11 +127,11 @@
   }
 
   /* soft light pools: radial gradients instead of blur filters (cheap to paint, no clipped edges) */
+  /* strength lives in the gradient (--a), not in `opacity`, so the pool paints in one pass */
   .glow-blob {
     position: absolute;
     border-radius: 9999px;
-    background: radial-gradient(closest-side, var(--c, var(--glow)), transparent);
-    opacity: 0.35;
+    background: radial-gradient(closest-side, color-mix(in srgb, var(--c, var(--glow)) calc(var(--a, 0.35) * 100%), transparent), transparent);
     pointer-events: none;
   }
 

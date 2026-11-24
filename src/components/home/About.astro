@@ -103,10 +103,10 @@ const photo = p.aboutPhoto;
   .about-photo-glow {
     position: absolute;
     inset: 0;
+    /* normal blending (no blend-mode pass): a violet glow rising from the bottom and a soft top highlight */
     background:
-      radial-gradient(120% 60% at 50% 120%, color-mix(in oklab, var(--glow) 45%, transparent), transparent 60%),
-      linear-gradient(160deg, rgb(255 255 255 / 0.12), transparent 30%);
-    mix-blend-mode: screen;
+      radial-gradient(120% 60% at 50% 120%, color-mix(in oklab, var(--glow) 32%, transparent), transparent 60%),
+      linear-gradient(160deg, rgb(255 255 255 / 0.08), transparent 30%);
     pointer-events: none;
   }
   .about-row {

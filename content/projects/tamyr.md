@@ -30,8 +30,7 @@ metrics:
   - { value: "0", label: { ru: "ложных тревог почти за 17 часов нормальной работы на модели", en: "false alarms in almost 17 hours of simulated normal running" } }
   - { value: "6–7", label: { ru: "секунд от утроения вибрации до тревоги (синтетический сигнал)", en: "seconds from tripled vibration to an alert (synthetic signal)" } }
   - { value: "33/33", label: { ru: "автотеста проходят", en: "automated tests pass" } }
-links:
-  - { label: { ru: "Живой продукт: демо-цех", en: "Live product: demo workshop" }, url: "https://tamyr-production.up.railway.app/w/2", kind: demo }
+links: []
 cover: ./media/tamyr/cover.webp
 coverAlt: { ru: "Телефон-датчик показывает индекс 39 и тревогу, рядом дашборд: пик вибрации на частоте вращения и событие через 6,6 с (синтетический сигнал)", en: "The phone sensor shows index 39 and an alarm; next to it the dashboard shows a vibration peak at the rotation frequency and an event after 6.6 s (synthetic signal)" }
 gallery:

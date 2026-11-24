@@ -23,15 +23,14 @@ did:
     - Reading: a 120–200-word text on one of 6 topics with 3 comprehension questions and model answers for self-checking. Games: Word Match, pairing words with translations against the clock, and chess on chess.js against a bot that plays random legal moves, while an AI coach comments on every move the player makes and slips in chess and English phrases.
     - Answers are never scored: XP and coins come for completed activities, with levels, day streaks, 8 badges and a shop on top. The no-grading rule is built into the data types themselves — there is no score field for an answer.
     - Connected the AI through an adapter with a single interface: Gemini, which has a free tier, by default and OpenAI as an alternative, switched with one environment variable. Deployed the site on Vercel.
-outcome: { ru: "MVP опубликован на Vercel 15 июля 2026 года, код открыт на GitHub. На живой версии сейчас не задан ключ Gemini, поэтому разделы с ИИ отвечают ошибкой; выбор сценариев, шахматы против бота и страница прогресса работают (проверено 24 ноября 2026 года). Данных об использовании нет.", en: "The MVP went live on Vercel on 15 July 2026, and the code is public on GitHub. The live version currently has no Gemini key set, so the AI sections return an error, while scenario selection, chess against the bot and the progress page work (checked on 24 November 2026). No usage data is available." }
+outcome: { ru: "MVP опубликован на Vercel 15 июля 2026 года. На живой версии сейчас не задан ключ Gemini, поэтому разделы с ИИ отвечают ошибкой; выбор сценариев, шахматы против бота и страница прогресса работают (проверено 24 ноября 2026 года). Данных об использовании нет.", en: "The MVP went live on Vercel on 15 July 2026. The live version currently has no Gemini key set, so the AI sections return an error, while scenario selection, chess against the bot and the progress page work (checked on 24 November 2026). No usage data is available." }
 stack: [ "Next.js 16", "React 19", "TypeScript", "Tailwind CSS 4", "Gemini API", "OpenAI API", "zod", "chess.js", "Web Speech API", "Vercel" ]
 metrics:
   - { value: "6", label: { ru: "разделов — от слов дня до шахмат", en: "sections, from words of the day to chess" } }
   - { value: "7", label: { ru: "ролевых сценариев плюс свободный чат", en: "role-play scenarios plus free chat" } }
   - { value: "3", label: { ru: "уровня сложности — примерно от A1–A2 до C1", en: "difficulty levels, roughly A1–A2 to C1" } }
   - { value: "8", label: { ru: "значков: за серии дней, слова, диалоги и игры", en: "badges for streaks, words, conversations and games" } }
-links:
-  - { label: { ru: "Код на GitHub", en: "Code on GitHub" }, url: "https://github.com/gennadiy0041/english-practice-hub2", kind: repo }
+links: []
 cover: ./media/english-practice-hub/cover.webp
 coverAlt: { ru: "Экран «AI Conversation»: свободный чат или один из семи ролевых сценариев — от аэропорта до переговоров — и три уровня сложности", en: "The AI Conversation screen: free chat or one of seven role-play scenarios, from the airport to a negotiation, and three difficulty levels" }
 gallery:
