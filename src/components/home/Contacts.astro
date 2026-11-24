@@ -31,7 +31,8 @@ const filledIcons = new Set(['telegram', 'github']);
     </p>
     <h2 id="contacts-title" class="contact-title" data-split>{t('contacts.title')}</h2>
     <p class="mx-auto mt-6 max-w-xl text-[1.1rem] leading-relaxed text-[var(--text-dim)]" data-reveal>{t('contacts.lead')}</p>
-    <ul class="mx-auto mt-12 flex max-w-3xl flex-wrap justify-center gap-3" role="list">
+    <!-- below lg: one column of equal-width buttons; lg and up: one centred row -->
+    <ul class="mx-auto mt-12 flex max-w-[20rem] flex-col gap-3 lg:max-w-5xl lg:flex-row lg:flex-wrap lg:justify-center" role="list">
       {
         p.contacts.map((c, i) => {
           const isMail = c.url.startsWith('mailto:');
@@ -84,7 +85,9 @@ const filledIcons = new Set(['telegram', 'github']);
   }
   .contact-link {
     display: inline-flex;
+    flex: 1 1 auto;
     align-items: center;
+    justify-content: center;
     gap: 0.7rem;
     height: 3.4rem;
     padding-inline: 1.4rem;
