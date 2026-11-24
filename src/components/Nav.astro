@@ -26,7 +26,7 @@ const links = [
       <span class="logo-mark" aria-hidden="true">
         <svg viewBox="0 0 32 32" width="32" height="32"><rect x="1" y="1" width="30" height="30" rx="9" fill="none" stroke="currentColor" stroke-opacity=".22"></rect><path d="M19.5 10.5a6.4 6.4 0 1 0 1.6 7.2h-5" fill="none" stroke="var(--accent)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"></path><path d="M22.5 9.5v13" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"></path><path d="m22.6 16 4-6.2M22.6 16l4 6.5" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"></path></svg>
       </span>
-      <span class="hidden font-mono text-[0.78rem] tracking-[0.08em] text-[var(--text-dim)] uppercase transition-colors group-hover:text-[var(--text)] sm:inline">
+      <span class="hidden font-mono text-[0.78rem] tracking-[0.08em] whitespace-nowrap text-[var(--text-dim)] uppercase transition-colors group-hover:text-[var(--text)] sm:inline lg:hidden xl:inline">
         {lang === 'ru' ? 'Геннадий Козлов' : 'Gennadiy Kozlov'}
       </span>
     </a>
@@ -123,6 +123,7 @@ const links = [
   .nav-link {
     position: relative;
     display: inline-flex;
+    white-space: nowrap;
     height: 2.25rem;
     align-items: center;
     padding-inline: 0.8rem;
