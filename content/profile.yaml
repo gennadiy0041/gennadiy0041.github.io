@@ -76,8 +76,10 @@ main:
     - { name: { ru: "Английский", en: "English" }, level: { ru: "C1 (EF SET)", en: "C1 (EF SET)" } }
     - { name: { ru: "Казахский", en: "Kazakh" }, level: { ru: "профессиональный", en: "professional" } }
     - { name: { ru: "Индонезийский", en: "Indonesian" }, level: { ru: "базовый", en: "basic" } }
-  # Only contacts Gennadiy has published before; the rest is waiting for his confirmation.
+  # Confirmed by Gennadiy on 24.11.2026 (the t.me username is mnngkv_11; "mnnkgv11" is only its display name).
+  # A phone or WhatsApp number goes here only with his explicit OK.
   contacts:
-    - { kind: telegram, label: "Telegram · @mnnkgv11", url: "https://t.me/mnnkgv11", primary: true }
+    - { kind: telegram, label: "Telegram · @mnngkv_11", url: "https://t.me/mnngkv_11", primary: true }
     - { kind: github, label: "GitHub · gennadiy0041", url: "https://github.com/gennadiy0041" }
-  updated: "2026-11-16"
+    - { kind: instagram, label: "Instagram · @mnngkv_11", url: "https://www.instagram.com/mnngkv_11/" }
+  updated: "2026-11-24"
