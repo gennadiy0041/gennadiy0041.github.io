@@ -44,13 +44,17 @@ export const DEFAULT_LOOK: Readonly<HeroLook> = {
  */
 export const POSTER_FRAME: Readonly<HeroFrame> = { time: 40, pointerX: 0.64, pointerY: 0.4, hover: 1, bloom: 0.8 };
 
-/** One transparent, straight-alpha layer; no depth/stencil/MSAA (lines are anti-aliased in the shader). */
+/**
+ * One transparent layer in premultiplied alpha, the browsers' default and the only alpha mode Windows'
+ * DirectComposition knows: Edge composited a straight-alpha canvas there as if it were premultiplied (see the
+ * end of the fragment shader). No depth/stencil/MSAA (lines are anti-aliased in the shader).
+ */
 export const CONTEXT_ATTRIBUTES = {
   alpha: true,
   antialias: false,
   depth: false,
   stencil: false,
-  premultipliedAlpha: false,
+  premultipliedAlpha: true,
   powerPreference: 'high-performance',
 } as const satisfies WebGLContextAttributes;
 

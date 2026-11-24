@@ -129,6 +129,11 @@ void main() {
   // Interleaved-gradient-noise dither hides 8-bit banding in the faint glow.
   float dither = fract(52.9829189 * fract(dot(frag, vec2(0.06711056, 0.00583715))));
   color = clamp(color + (dither - 0.5) / 255.0, 0.0, 1.0);
-  fragColor = vec4(color.rgb / max(color.a, 1e-4), color.a);
+  // Premultiplied output (the context keeps the default premultipliedAlpha: true), with colour capped at alpha so
+  // every pixel is valid premultiplied: a transparent pixel is (0,0,0,0) on any compositor path. The earlier
+  // straight-alpha output (rgb / a) gave near-transparent pixels full-strength colour (the glow's violet, the
+  // dither as white noise); Edge, when it hands canvases to Windows' DirectComposition, showed that as a violet,
+  // hatched hero. min(rgb, a) is exactly what rgb / a clamped to 1 composited to before.
+  fragColor = vec4(min(color.rgb, vec3(color.a)), color.a);
 }
 `;
